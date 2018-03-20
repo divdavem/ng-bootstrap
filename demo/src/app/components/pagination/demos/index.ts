@@ -4,34 +4,8 @@ import {NgbdPaginationSize} from './size/pagination-size';
 import {NgbdPaginationConfig} from './config/pagination-config';
 import {NgbdPaginationDisabled} from './disabled/pagination-disabled';
 import {NgbdPaginationJustify} from './justify/pagination-justify';
+export {DEMO_SNIPPETS} from './snippets';
 
 export const DEMO_DIRECTIVES = [
   NgbdPaginationAdvanced, NgbdPaginationBasic, NgbdPaginationSize, NgbdPaginationConfig, NgbdPaginationDisabled, NgbdPaginationJustify
 ];
-
-export const DEMO_SNIPPETS = {
-  'advanced': {
-    'code': require('!!prismjs-loader?lang=typescript!./advanced/pagination-advanced'),
-    'markup': require('!!prismjs-loader?lang=markup!./advanced/pagination-advanced.html')
-  },
-  'basic': {
-    'code': require('!!prismjs-loader?lang=typescript!./basic/pagination-basic'),
-    'markup': require('!!prismjs-loader?lang=markup!./basic/pagination-basic.html')
-  },
-  'justify': {
-    'code': require('!!prismjs-loader?lang=typescript!./justify/pagination-justify'),
-    'markup': require('!!prismjs-loader?lang=markup!./justify/pagination-justify.html')
-  },
-  'size': {
-    'code': require('!!prismjs-loader?lang=typescript!./size/pagination-size'),
-    'markup': require('!!prismjs-loader?lang=markup!./size/pagination-size.html')
-  },
-  'disabled': {
-    'code': require('!!prismjs-loader?lang=typescript!./disabled/pagination-disabled'),
-    'markup': require('!!prismjs-loader?lang=markup!./disabled/pagination-disabled.html')
-  },
-  'config': {
-    'code': require('!!prismjs-loader?lang=typescript!./config/pagination-config'),
-    'markup': require('!!prismjs-loader?lang=markup!./config/pagination-config.html')
-  }
-};

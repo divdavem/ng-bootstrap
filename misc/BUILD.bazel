@@ -1,0 +1,39 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary")
+
+nodejs_binary(
+    name = "buildDoc",
+    data = [
+        "api-doc.js",
+        "build-doc.js",
+    ],
+    entry_point = "ng_bootstrap/misc/build-doc.js",
+)
+
+nodejs_binary(
+    name = "version",
+    data = [
+        "version.js",
+        "//:package.json",
+    ],
+    entry_point = "ng_bootstrap/misc/version.js",
+)
+
+nodejs_binary(
+    name = "gzip",
+    data = [
+        "gzip.js",
+        "//:package.json",
+    ],
+    entry_point = "ng_bootstrap/misc/gzip.js",
+)
+
+nodejs_binary(
+    name = "concat",
+    data = [
+        "concat.js",
+        "//:package.json",
+    ],
+    entry_point = "ng_bootstrap/misc/concat.js",
+)

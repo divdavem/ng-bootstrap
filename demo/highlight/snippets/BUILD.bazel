@@ -1,0 +1,11 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary")
+
+nodejs_binary(
+    name = "genSnippets",
+    data = [
+        "genSnippets.js"
+    ],
+    entry_point = "ng_bootstrap/demo/highlight/snippets/genSnippets.js",
+)

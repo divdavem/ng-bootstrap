@@ -1,13 +1,13 @@
 import {Router, NavigationEnd} from '@angular/router';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Analytics} from './shared/analytics/analytics';
 import {componentsList} from './shared';
 
-import '../style/app.scss';
-
 @Component({
   selector: 'ngbd-app',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./style/style.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
   navbarCollapsed = true;

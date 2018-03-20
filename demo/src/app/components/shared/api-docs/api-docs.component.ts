@@ -1,5 +1,5 @@
 import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
-import docs from '../../../../api-docs';
+import docs from '@ng-bootstrap/ng-bootstrap/api-doc';
 import {PropertyDesc, DirectiveDesc, InputDesc, MethodDesc, ClassDesc, signature} from './api-docs.model';
 import {Analytics} from '../../../shared/analytics/analytics';
 
@@ -43,10 +43,12 @@ export class NgbdApiDocs {
     this.configServiceName = `${directiveName}Config`;
     const configApiDocs = docs[this.configServiceName];
     this._configProperties = {};
+
     if (configApiDocs) {
       this.apiDocs.inputs.forEach(
         input => this._configProperties[input.name] = this._findInputConfigProperty(configApiDocs, input));
     }
+
   };
 
   /**
@@ -74,4 +76,5 @@ export class NgbdApiDocs {
   private _findInputConfigProperty(configApiDocs: ClassDesc, input: InputDesc): PropertyDesc {
     return configApiDocs.properties.filter(prop => prop.name === input.name)[0];
   }
+
 }

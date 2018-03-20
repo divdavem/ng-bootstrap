@@ -1,0 +1,71 @@
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "package.json",
+    "tsconfig.json",
+])
+
+filegroup(
+    name = "demo_vendor_css",
+    srcs = [
+        "node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "node_modules/prismjs/themes/prism.css",
+    ]
+)
+
+filegroup(
+    name = "demo_vendor_js",
+    srcs = [
+        "node_modules/core-js/client/shim.min.js",
+        "node_modules/zone.js/dist/zone.min.js",
+    ]
+)
+
+# NOTE: this will move to node_modules/BUILD in a later release
+filegroup(
+    name = "node_modules",
+    # NB: rxjs is not in this list, because we build it from sources using the
+    # label @rxjs//:rxjs
+    srcs = glob(["/".join([
+        "node_modules",
+        pkg,
+        "**",
+        ext,
+    ]) for pkg in [
+        "@angular",
+        "protractor",
+        "tsickle",
+        "tsutils",
+        "typescript",
+        "@types",
+    ] for ext in [
+        "*.js",
+        "*.json",
+        "*.d.ts",
+    ]] + [
+        "node_modules/http-server/**",
+    ]),
+)
+
+ANGULAR_TESTING = [
+    "node_modules/@angular/*/bundles/*-testing.umd.js",
+    # We use AOT, so the compiler and the dynamic platform-browser should be
+    # visible only in tests
+    "node_modules/@angular/compiler/bundles/*.umd.js",
+    "node_modules/@angular/platform-browser-dynamic/bundles/*.umd.js",
+]
+
+# TODO(alexeagle): it's messy for users to need to specify the following
+# Angular dependency lists. It should live somewhere else.
+# See https://github.com/angular/angular/issues/21048
+
+filegroup(
+    name = "angular_bundles",
+    srcs = glob(
+        [
+            "node_modules/tslib/tslib.js",
+            "node_modules/@angular/*/bundles/*.umd.js",
+        ],
+        exclude = ANGULAR_TESTING,
+    ),
+)

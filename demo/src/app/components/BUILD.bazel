@@ -1,0 +1,5 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//demo/src/app/components:components.bzl", "allDemoComponents")
+
+allDemoComponents(glob)

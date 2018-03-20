@@ -1,5 +1,6 @@
 /node_modules/
 /dist/
+/bazel-*
 /temp/
 /demo/dist/
 npm-debug.log

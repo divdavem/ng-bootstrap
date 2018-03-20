@@ -1,0 +1,18 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = glob(["*.ts", "hijri/*.ts"], exclude = ["*.spec.ts", "hijri/*.spec.ts"]),
+)
+
+load("@angular//:index.bzl", "ng_module")
+
+ng_module(
+    name = "datepicker",
+    srcs = [":sources"],
+    tsconfig = "//:tsconfig.json",
+    deps = [
+        "//src/util",
+        "@rxjs",
+    ]
+)
