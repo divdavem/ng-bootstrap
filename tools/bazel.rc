@@ -1,2 +1,5 @@
 build --strategy=TypeScriptCompile=worker
-build --strategy=AngularTemplateCompile=worker
+
+# The build does not seem to be hermetic when using a worker for AngularTemplateCompile
+# (it is possible to depend on undeclared dependencies in that case, which is dangerous)
+# build --strategy=AngularTemplateCompile=worker
