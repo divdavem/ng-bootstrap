@@ -8,7 +8,9 @@
     >
       <img src="img/link-symbol.svg" alt="Anchor link to: {{apiDocs.className}}"/>
     </a>
+    &ngsp;
     {{apiDocs.className}}
+    &ngsp;
     <a
       class="github-link"
       (click)="trackSourceClick()"
@@ -66,6 +68,7 @@
             <td class="content-cell">
                 <p class="signature">
                     <code>{{methodSignature(method)}}</code>
+                    &ngsp;
                     <small class="text-muted" title="Return type">=&gt; {{ method.returnType }}</small>
                 </p>
                 <p *ngIf="method.deprecated">{{ method.deprecated.description }}</p>

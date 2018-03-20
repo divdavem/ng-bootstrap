@@ -7,7 +7,9 @@
     >
       <img src="img/link-symbol.svg" alt="Anchor link to: {{apiDocs.className}}"/>
     </a>
+    &ngsp;
     <span>{{apiDocs.className}}</span>
+    &ngsp;
     <a
       class="github-link"
       (click)="trackSourceClick()"
@@ -49,6 +51,7 @@
               </div>
               <div *ngIf="defaultInputValue(input) || hasConfigProperty(input)">
                 <span><i>Default value: </i><code>{{ defaultInputValue(input) || '-' }}</code></span>
+                &ngsp;
                 <span *ngIf="hasConfigProperty(input)">&mdash; initialized from {{ configServiceName }} service</span>
               </div>
             </div>
@@ -94,6 +97,7 @@
             <td class="content-cell">
                 <p class="signature">
                     <code>{{methodSignature(method)}}</code>
+                    &ngsp;
                     <small class="text-muted" title="Return type">=&gt; {{ method.returnType }}</small>
                 </p>
                 <p *ngIf="method.deprecated">{{ method.deprecated.description }}</p>
