@@ -1,5 +1,9 @@
 import {Component, Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+
+// The dependency on HttpClientModule has been temporarily removed because
+// it causes an issue with ts_devserver, cf https://github.com/angular/angular/issues/22866
+// import {HttpClient, HttpParams} from '@angular/common/http';
+
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import 'rxjs/add/operator/catch';
@@ -11,6 +15,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/merge';
 
 const WIKI_URL = 'https://en.wikipedia.org/w/api.php';
+/*
 const PARAMS = new HttpParams({
   fromObject: {
     action: 'opensearch',
@@ -18,12 +23,17 @@ const PARAMS = new HttpParams({
     origin: '*'
   }
 });
+*/
 
 @Injectable()
 export class WikipediaService {
-  constructor(private http: HttpClient) {}
+  constructor(/* private http: HttpClient */) {}
 
   search(term: string) {
+    return of([]);
+
+    /*
+
     if (term === '') {
       return of([]);
     }
@@ -31,6 +41,8 @@ export class WikipediaService {
     return this.http
       .get(WIKI_URL, {params: PARAMS.set('search', term)})
       .map(response => response[1]);
+
+    */
   }
 }
 
