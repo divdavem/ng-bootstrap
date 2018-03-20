@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {NgbTypeahead} from '@ng-bootstrap/ng-bootstrap';
+import {NgbTypeahead} from 'ng_bootstrap/src';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/map';

@@ -1,5 +1,5 @@
 import {Component, Injectable} from '@angular/core';
-import {NgbDateAdapter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDateAdapter, NgbDateStruct} from 'ng_bootstrap/src';
 
 /**
  * Example of a Native Date adapter

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NgbAccordionConfig} from '@ng-bootstrap/ng-bootstrap';
+import {NgbAccordionConfig} from 'ng_bootstrap/src';
 
 @Component({
   selector: 'ngbd-accordion-config',

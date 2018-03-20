@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NgbTooltipConfig} from '@ng-bootstrap/ng-bootstrap';
+import {NgbTooltipConfig} from 'ng_bootstrap/src';
 
 @Component({
   selector: 'ngbd-tooltip-config',

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NgbDropdownConfig} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDropdownConfig} from 'ng_bootstrap/src';
 
 @Component({
   selector: 'ngbd-dropdown-config',

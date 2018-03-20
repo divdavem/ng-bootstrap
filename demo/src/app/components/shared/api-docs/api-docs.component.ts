@@ -1,5 +1,5 @@
 import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
-import docs from '@ng-bootstrap/ng-bootstrap/api-doc';
+import docs from 'ng_bootstrap/src/api-doc';
 import {PropertyDesc, DirectiveDesc, InputDesc, MethodDesc, ClassDesc, signature} from './api-docs.model';
 import {Analytics} from '../../../shared/analytics/analytics';
 

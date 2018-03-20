@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModule} from 'ng_bootstrap/src';
 
 import {DefaultComponent} from './default';
 import {GettingStarted} from './getting-started';

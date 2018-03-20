@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgbCarouselConfig} from '@ng-bootstrap/ng-bootstrap';
+import {NgbCarouselConfig} from 'ng_bootstrap/src';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 

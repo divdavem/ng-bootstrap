@@ -1,4 +1,4 @@
-import {NgbPopover} from '@ng-bootstrap/ng-bootstrap';
+import {NgbPopover} from 'ng_bootstrap/src';
 import {Component, ViewChild} from '@angular/core';
 
 @Component({

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NgbPaginationConfig} from '@ng-bootstrap/ng-bootstrap';
+import {NgbPaginationConfig} from 'ng_bootstrap/src';
 
 @Component({
   selector: 'ngbd-pagination-disabled',

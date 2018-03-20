@@ -2,7 +2,7 @@ import {Component, Injectable} from '@angular/core';
 import {
   NgbDateStruct, NgbCalendar, NgbCalendarIslamicCivil, NgbCalendarIslamicUmalqura,
   NgbDatepickerI18n
-} from '@ng-bootstrap/ng-bootstrap';
+} from 'ng_bootstrap/src';
 
 const I18N_VALUES = {
   weekdays: ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'],

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {NgbTypeaheadConfig} from '@ng-bootstrap/ng-bootstrap';
+import {NgbTypeaheadConfig} from 'ng_bootstrap/src';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';

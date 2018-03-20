@@ -1,5 +1,5 @@
 import {Component, Injectable} from '@angular/core';
-import {NgbDatepickerI18n} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDatepickerI18n} from 'ng_bootstrap/src';
 
 const I18N_VALUES = {
   'fr': {

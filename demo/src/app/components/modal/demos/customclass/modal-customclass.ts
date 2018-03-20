@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, ModalDismissReasons} from 'ng_bootstrap/src';
 
 @Component({
   selector: 'ngbd-modal-customclass',
