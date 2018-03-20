@@ -26,6 +26,7 @@
   "author": "https://github.com/ng-bootstrap/ng-bootstrap/graphs/contributors",
   "main": "dist/index.js",
   "scripts": {
+    "postinstall": "ngc -p angular.tsconfig.json",
     "commitmsg": "node misc/validate-commit.js",
     "test": "gulp",
     "api-doc-tdd": "jasmine-node misc/api-doc.spec.js --autotest --watch misc/api-doc-test-cases/*.ts misc/api-doc.js",
