@@ -240,6 +240,8 @@ gulp.task('generate-docs', function() {
 });
 
 gulp.task('generate-plunks', function() {
+  // Disabled because the corresponding task was not implemented in Bazel
+  /*
   var getPlunker = require('./misc/plunk-gen');
   var demoGenUtils = require('./misc/demo-gen-utils');
   var plunks = [];
@@ -252,9 +254,12 @@ gulp.task('generate-plunks', function() {
   });
 
   return gulpFile(plunks, {src: true}).pipe(gulp.dest('demo/src/public/app/components'));
+  */
 });
 
 gulp.task('generate-stackblitzes', function() {
+  // Disabled because the corresponding task was not implemented in Bazel
+  /*
   var getStackblitz = require('./misc/stackblitz-gen');
   var demoGenUtils = require('./misc/demo-gen-utils');
   var stackblitzes = [];
@@ -268,6 +273,7 @@ gulp.task('generate-stackblitzes', function() {
   });
 
   return gulpFile(stackblitzes, {src: true}).pipe(gulp.dest('demo/src/public/app/components'));
+  */
 });
 
 gulp.task('clean:demo', function() { return del('demo/dist'); });
