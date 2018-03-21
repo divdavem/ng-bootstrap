@@ -8,6 +8,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ngToolsWebpack = require('@ngtools/webpack');
+var CompressionPlugin = require('compression-webpack-plugin');
 
 /**
  * Env
@@ -227,7 +228,10 @@ module.exports = function makeWebpackConfig() {
       // Reference: https://github.com/kevlened/copy-webpack-plugin
       new CopyWebpackPlugin([{
         from: root('demo/src/public')
-      }])
+      }]),
+
+      // Compress assets to produce .gz files
+      new CompressionPlugin()
     );
   }
 
