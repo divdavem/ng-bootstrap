@@ -30,6 +30,7 @@
     "npm": ">=3.10.7 <4.0.0"
   },
   "scripts": {
+    "postinstall": "ngc -p angular.tsconfig.json",
     "commitmsg": "node misc/validate-commit.js",
     "test": "gulp",
     "api-doc-tdd": "jasmine-node misc/api-doc.spec.js --autotest --watch misc/api-doc-test-cases/*.ts misc/api-doc.js",
