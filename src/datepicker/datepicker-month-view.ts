@@ -47,10 +47,10 @@ import {DayTemplateContext} from './datepicker-day-template-context';
         {{ i18n.getWeekdayShortName(w) }}
       </div>
     </div>
-    <ng-template ngFor let-week [ngForOf]="month.weeks">
+    <ng-template ngFor let-week [ngForOf]="month.weeks" [ngForTrackBy]="trackByIndex">
       <div *ngIf="!week.collapsed" class="ngb-dp-week" role="row">
         <div *ngIf="showWeekNumbers" class="ngb-dp-week-number small text-muted">{{ week.number }}</div>
-        <div *ngFor="let day of week.days" (click)="doSelect(day)" class="ngb-dp-day" role="gridcell"
+        <div *ngFor="let day of week.days; trackBy trackByIndex" (click)="doSelect(day)" class="ngb-dp-day" role="gridcell"
           [class.disabled]="day.context.disabled"
           [tabindex]="day.tabindex"
           [class.hidden]="day.hidden"
@@ -77,5 +77,9 @@ export class NgbDatepickerMonthView {
     if (!day.context.disabled && !day.hidden) {
       this.select.emit(NgbDate.from(day.date));
     }
+  }
+
+  trackByIndex(index) {
+    return index;
   }
 }

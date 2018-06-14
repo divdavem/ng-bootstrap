@@ -126,7 +126,7 @@ export interface NgbDatepickerNavigateEvent {
     </div>
 
     <div class="ngb-dp-months" (keydown)="onKeyDown($event)" (focusin)="showFocus(true)" (focusout)="showFocus(false)">
-      <ng-template ngFor let-month [ngForOf]="model.months" let-i="index">
+      <ng-template ngFor let-month [ngForOf]="model.months" [ngForTrackBy]="trackByIndex" let-i="index">
         <div class="ngb-dp-month">
           <div *ngIf="navigation === 'none' || (displayMonths > 1 && navigation === 'select')"
                 class="ngb-dp-month-name bg-light">
@@ -341,6 +341,10 @@ export class NgbDatepicker implements OnDestroy,
   setDisabledState(isDisabled: boolean) { this._service.disabled = isDisabled; }
 
   showFocus(focusVisible: boolean) { this._service.focusVisible = focusVisible; }
+
+  trackByIndex(index) {
+    return index;
+  }
 
   writeValue(value) { this._service.select(NgbDate.from(this._ngbDateAdapter.fromModel(value))); }
 }
