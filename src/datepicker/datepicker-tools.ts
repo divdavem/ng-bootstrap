@@ -87,38 +87,31 @@ export function buildMonths(
     calendar: NgbCalendar, date: NgbDate, state: DatepickerViewModel, i18n: NgbDatepickerI18n,
     force: boolean): MonthViewModel[] {
   const {displayMonths, months} = state;
-  const newFirstMonthStart = calendar.getNext(date, 'm', 0);
-  const newLastMonthStart = calendar.getNext(date, 'm', displayMonths - 1);
-  let reusableMonths: MonthViewModel[] = null;
+  // move old months to a temporary array
+  const monthsToReuse = months.splice(0, months.length);
 
-  if (!force && months.length > 0 && !newFirstMonthStart.after(months[months.length - 1].firstDate) &&
-      !newLastMonthStart.before(months[0].firstDate)) {
-    let startReuseIndex = -1;  // index of the first month to reuse
-    let endReuseIndex = 0;     // index of the first month not to reuse after the months to reuse
-    for (; endReuseIndex < months.length; endReuseIndex++) {
-      const curMonth = months[endReuseIndex];
-      if (newLastMonthStart.before(curMonth.firstDate) /* too late */) {
-        break;
-      } else if (startReuseIndex === -1 && !newFirstMonthStart.after(curMonth.firstDate) /* not too early */) {
-        startReuseIndex = endReuseIndex;
+  // generate new first dates, nullify or reuse months
+  const firstDates = Array.from({length: displayMonths}, (_, i) => {
+    const firstDate = calendar.getNext(date, 'm', i);
+    months[i] = null;
+
+    if (!force) {
+      const reusedIndex = monthsToReuse.findIndex(month => month.firstDate.equals(firstDate));
+      // move reused month back to months
+      if (reusedIndex !== -1) {
+        months[i] = monthsToReuse.splice(reusedIndex, 1)[0];
       }
     }
-    reusableMonths = months.splice(startReuseIndex, endReuseIndex - startReuseIndex);
-  }
 
-  for (let i = 0; i < displayMonths; i++) {
-    const newDate = calendar.getNext(date, 'm', i);
-    if (!reusableMonths || !reusableMonths[0].firstDate.equals(newDate)) {
-      months[i] = buildMonth(calendar, newDate, state, i18n, months[i]);
-    } else {
-      months.splice(i, 0, ...reusableMonths);
-      i += reusableMonths.length - 1;
-      reusableMonths = null;
+    return firstDate;
+  });
+
+  // rebuild nullified months
+  firstDates.forEach((firstDate, i) => {
+    if (months[i] === null) {
+      months[i] = buildMonth(calendar, firstDate, state, i18n, monthsToReuse.shift() || {} as MonthViewModel);
     }
-  }
-  if (months.length > displayMonths) {
-    months.splice(displayMonths);
-  }
+  });
 
   return months;
 }
