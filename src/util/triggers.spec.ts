@@ -1,4 +1,6 @@
-import {parseTriggers} from './triggers';
+import {fakeAsync, tick} from '@angular/core/testing';
+import {Subject, Subscription, Observable} from 'rxjs';
+import {parseTriggers, triggerDelay} from './triggers';
 
 describe('triggers', () => {
 
@@ -84,5 +86,92 @@ describe('triggers', () => {
       }).toThrow(`Triggers parse error: manual trigger can\'t be mixed with other triggers`);
     });
 
+  });
+
+  describe('triggerDelay', () => {
+    let subject$: Subject<boolean>;
+    let delayed$: Observable<boolean>;
+    let subscription: Subscription;
+    let spy: jasmine.Spy;
+
+    beforeEach(() => {
+      subject$ = new Subject();
+      spy = jasmine.createSpy();
+      delayed$ = subject$.asObservable().pipe(triggerDelay(5000, 1000));
+      subscription = delayed$.subscribe(spy);
+    });
+
+    afterEach(() => {
+      if (subscription) {
+        subscription.unsubscribe();
+        subscription = null;
+      }
+    });
+
+    it('delays open', fakeAsync(() => {
+         subject$.next(true);
+         tick(4999);
+         expect(spy).not.toHaveBeenCalled();
+         tick(2);
+         expect(spy).toHaveBeenCalledWith(true);
+         tick(100000);
+         expect(spy.calls.count()).toBe(1);
+       }));
+
+    it('delays close', fakeAsync(() => {
+         subject$.next(false);
+         tick(999);
+         expect(spy).not.toHaveBeenCalled();
+         tick(2);
+         expect(spy).toHaveBeenCalledWith(false);
+         tick(100000);
+         expect(spy.calls.count()).toBe(1);
+       }));
+
+    it('ignores extra open during openDelay', fakeAsync(() => {
+         subject$.next(true);
+         tick(200);
+         subject$.next(true);
+         tick(100);
+         subject$.next(true);
+         tick(200);
+         tick(4499);
+         expect(spy).not.toHaveBeenCalled();
+         tick(2);
+         expect(spy).toHaveBeenCalledWith(true);
+         tick(100000);
+         expect(spy.calls.count()).toBe(1);
+       }));
+
+    it('ignores extra close during closeDelay', fakeAsync(() => {
+         subject$.next(false);
+         tick(200);
+         subject$.next(false);
+         tick(100);
+         subject$.next(false);
+         tick(200);
+         tick(499);
+         expect(spy).not.toHaveBeenCalled();
+         tick(2);
+         expect(spy).toHaveBeenCalledWith(false);
+         tick(100000);
+         expect(spy.calls.count()).toBe(1);
+       }));
+
+    it('cancels open when receiving close during openDelay', fakeAsync(() => {
+         subject$.next(true);
+         tick(4998);
+         subject$.next(false);
+         tick(100000);
+         expect(spy).not.toHaveBeenCalled();
+       }));
+
+    it('cancels close when receiving open during closeDelay', fakeAsync(() => {
+         subject$.next(false);
+         tick(998);
+         subject$.next(true);
+         tick(100000);
+         expect(spy).not.toHaveBeenCalled();
+       }));
   });
 });

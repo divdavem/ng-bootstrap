@@ -142,6 +142,14 @@ export class NgbTooltip implements OnInit, OnDestroy {
    */
   @Input() tooltipClass: string;
   /**
+   * Delay (in ms) before opening the tooltip after a non-manual opening trigger.
+   */
+  @Input() openDelay: number;
+  /**
+   * Delay (in ms) before closing the tooltip after a non-manual closing trigger.
+   */
+  @Input() closeDelay: number;
+  /**
    * Emits an event when the tooltip is shown
    */
   @Output() shown = new EventEmitter();
@@ -167,6 +175,8 @@ export class NgbTooltip implements OnInit, OnDestroy {
     this.container = config.container;
     this.disableTooltip = config.disableTooltip;
     this.tooltipClass = config.tooltipClass;
+    this.openDelay = config.openDelay;
+    this.closeDelay = config.closeDelay;
     this._popupService = new PopupService<NgbTooltipWindow>(
         NgbTooltipWindow, injector, viewContainerRef, _renderer, componentFactoryResolver);
 
@@ -276,8 +286,8 @@ export class NgbTooltip implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._unregisterListenersFn = listenToTriggers(
-        this._renderer, this._elementRef.nativeElement, this.triggers, this.open.bind(this), this.close.bind(this),
-        this.toggle.bind(this));
+        this._renderer, this._elementRef.nativeElement, this.triggers, this.isOpen.bind(this), this.open.bind(this),
+        this.close.bind(this), +this.openDelay, +this.closeDelay);
   }
 
   ngOnDestroy() {

@@ -1,3 +1,6 @@
+import {Observable, EMPTY, merge} from 'rxjs';
+import {share, filter, delay, map} from 'rxjs/operators';
+
 export class Trigger {
   constructor(public open: string, public close?: string) {
     if (!close) {
@@ -37,24 +40,74 @@ export function parseTriggers(triggers: string, aliases = DEFAULT_ALIASES): Trig
   return parsedTriggers;
 }
 
-const noopFn = () => {};
-
-export function listenToTriggers(renderer: any, nativeElement: any, triggers: string, openFn, closeFn, toggleFn) {
+export function observeTriggers(renderer: any, nativeElement: any, triggers: string, isOpenedFn: () => boolean) {
   const parsedTriggers = parseTriggers(triggers);
-  const listeners = [];
 
   if (parsedTriggers.length === 1 && parsedTriggers[0].isManual()) {
-    return noopFn;
+    return EMPTY;
   }
+  return new Observable<boolean>(subscriber => {
+    const listeners = [];
+    const openFn = () => subscriber.next(true);
+    const closeFn = () => subscriber.next(false);
+    const toggleFn = () => subscriber.next(!isOpenedFn());
 
-  parsedTriggers.forEach((trigger: Trigger) => {
-    if (trigger.open === trigger.close) {
-      listeners.push(renderer.listen(nativeElement, trigger.open, toggleFn));
-    } else {
-      listeners.push(
-          renderer.listen(nativeElement, trigger.open, openFn), renderer.listen(nativeElement, trigger.close, closeFn));
-    }
+    parsedTriggers.forEach((trigger: Trigger) => {
+      if (trigger.open === trigger.close) {
+        listeners.push(renderer.listen(nativeElement, trigger.open, toggleFn));
+      } else {
+        listeners.push(
+            renderer.listen(nativeElement, trigger.open, openFn),
+            renderer.listen(nativeElement, trigger.close, closeFn));
+      }
+    });
+
+    return () => { listeners.forEach(unsubscribeFn => unsubscribeFn()); };
   });
+}
 
-  return () => { listeners.forEach(unsubscribeFn => unsubscribeFn()); };
+export function subscribeTriggers(observable: Observable<boolean>, openFn, closeFn) {
+  const subscription = observable.subscribe(next => (next ? openFn() : closeFn()));
+  return () => subscription.unsubscribe();
+}
+
+export function triggerDelay(openDelay: number, closeDelay: number) {
+  return (input$: Observable<boolean>) => {
+    let pending = null;
+    const filteredInput$ = input$.pipe(
+        map(open => ({open, keep: true})), filter(event => {
+          if (!pending) {
+            pending = event;
+            return true;
+          }
+          if (pending.open !== event.open) {
+            pending.keep = false;
+            pending = null;
+          }
+          return false;
+        }),
+        share());
+    const delayedOpen$ = filteredInput$.pipe(filter(event => event.open), delay(openDelay));
+    const delayedClose$ = filteredInput$.pipe(filter(event => !event.open), delay(closeDelay));
+    return merge(delayedOpen$, delayedClose$)
+        .pipe(
+            filter(event => {
+              if (event.keep) {
+                pending = null;
+                return true;
+              }
+              return false;
+            }),
+            map(event => event.open));
+  };
+}
+
+export function listenToTriggers(
+    renderer: any, nativeElement: any, triggers: string, isOpenedFn: () => boolean, openFn, closeFn, openDelay = 0,
+    closeDelay = 0) {
+  let observable = observeTriggers(renderer, nativeElement, triggers, isOpenedFn);
+  if (openDelay > 0 || closeDelay > 0) {
+    observable = observable.pipe(triggerDelay(openDelay, closeDelay));
+  }
+  return subscribeTriggers(observable, openFn, closeFn);
 }
