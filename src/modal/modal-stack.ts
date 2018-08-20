@@ -22,6 +22,7 @@ import {NgbActiveModal, NgbModalRef} from './modal-ref';
 export class NgbModalStack {
   private _windowAttributes = ['ariaLabelledBy', 'backdrop', 'centered', 'keyboard', 'size', 'windowClass'];
   private _backdropAttributes = ['backdropClass'];
+  public modalRefs: NgbModalRef[] = [];
 
   constructor(
       private _applicationRef: ApplicationRef, private _injector: Injector, @Inject(DOCUMENT) private _document,
@@ -45,6 +46,7 @@ export class NgbModalStack {
     let windowCmptRef: ComponentRef<NgbModalWindow> = this._attachWindowComponent(moduleCFR, containerEl, contentRef);
     let ngbModalRef: NgbModalRef = new NgbModalRef(windowCmptRef, contentRef, backdropCmptRef, options.beforeDismiss);
 
+    this._registerModalRef(ngbModalRef);
     ngbModalRef.result.then(revertPaddingForScrollBar, revertPaddingForScrollBar);
     activeModal.close = (result: any) => { ngbModalRef.close(result); };
     activeModal.dismiss = (reason: any) => { ngbModalRef.dismiss(reason); };
@@ -56,6 +58,19 @@ export class NgbModalStack {
     }
     return ngbModalRef;
   }
+
+  private _registerModalRef(ngbModalRef: NgbModalRef) {
+    const unregisterOpenedModalRef = () => {
+      const index = this.modalRefs.indexOf(ngbModalRef);
+      if (index > -1) {
+        this.modalRefs.splice(index, 1);
+      }
+    };
+    this.modalRefs.push(ngbModalRef);
+    ngbModalRef.result.then(unregisterOpenedModalRef, unregisterOpenedModalRef);
+  }
+
+  public dismissAll(reason?: any) { this.modalRefs.forEach(ngbModalRef => ngbModalRef.dismiss(reason)); }
 
   private _attachBackdrop(moduleCFR: ComponentFactoryResolver, containerEl: any): ComponentRef<NgbModalBackdrop> {
     let backdropFactory = moduleCFR.resolveComponentFactory(NgbModalBackdrop);

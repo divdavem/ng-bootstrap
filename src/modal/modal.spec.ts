@@ -9,9 +9,10 @@ import {
   Injector
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {TestBed, ComponentFixture, async} from '@angular/core/testing';
+import {TestBed, ComponentFixture, async, fakeAsync, tick} from '@angular/core/testing';
 
 import {NgbModalModule, NgbModal, NgbActiveModal, NgbModalRef} from './modal.module';
+import {NgbModalStack} from './modal-stack';
 import {NgbModalConfig} from './modal-config';
 
 const NOOP = () => {};
@@ -247,6 +248,38 @@ describe('ngb-modal', () => {
         fixture.detectChanges();
         expect(fixture.nativeElement).not.toHaveModal();
       });
+
+      it('should dismiss with dismissAll', fakeAsync(() => {
+           const modalStack = fixture.debugElement.injector.get(NgbModalStack);
+           expect(modalStack.modalRefs.length).toBe(0);
+
+           const modalInstance = fixture.componentInstance.open('foo');
+           const dismissListener = jasmine.createSpy('dismiss');
+           const closeListener = jasmine.createSpy('close');
+           modalInstance.result.then(closeListener, dismissListener);
+           fixture.detectChanges();
+           expect(fixture.nativeElement).toHaveModal('foo');
+           expect(modalStack.modalRefs.length).toBe(1);
+
+           fixture.componentInstance.dismissAll('dismissAllArg');
+           fixture.detectChanges();
+           expect(fixture.nativeElement).not.toHaveModal();
+           tick(1);
+           expect(modalStack.modalRefs.length).toBe(0);
+           expect(dismissListener).toHaveBeenCalledTimes(1);
+           expect(dismissListener).toHaveBeenCalledWith('dismissAllArg');
+           expect(closeListener).not.toHaveBeenCalled();
+         }));
+
+      it('should not throw when dismissAll called with no active modal', fakeAsync(() => {
+           const modalStack = fixture.debugElement.injector.get(NgbModalStack);
+           expect(modalStack.modalRefs.length).toBe(0);
+
+           fixture.componentInstance.dismissAll();
+           fixture.detectChanges();
+           tick(1);
+           expect(modalStack.modalRefs.length).toBe(0);
+         }));
 
       it('should not throw when dismiss called multiple times', () => {
         const modalRef = fixture.componentInstance.open('foo');
@@ -786,6 +819,7 @@ class TestComponent {
       this.openedModal.close('ok');
     }
   }
+  dismissAll(reason?: any) { this.modalService.dismissAll(reason); }
   openTpl(options?: Object) { return this.modalService.open(this.tplContent, options); }
   openCmpt(cmptType: any, options?: Object) { return this.modalService.open(cmptType, options); }
   openDestroyableTpl(options?: Object) { return this.modalService.open(this.tplDestroyableContent, options); }
