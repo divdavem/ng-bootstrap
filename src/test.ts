@@ -18,6 +18,9 @@ import 'core-js/es7/reflect';
 import 'zone.js/dist/zone';
 import 'zone.js/dist/zone-testing';
 
+// This has to be done before rxjs is loaded (so before any import of @angular/...):
+import './test/rxjs-ugly-workaround';
+
 import {getTestBed} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
