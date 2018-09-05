@@ -78,7 +78,12 @@ export {
   NgbTabset,
   NgbTab,
   NgbTabContent,
-  NgbTabTitle
+  NgbTabTitle,
+  NgbTabDirective,
+  NgbTabLinkDirective,
+  NgbTabsetDirective,
+  NgbTabsetOutlet,
+  NgbSelfControlledTabset
 } from './tabset/tabset.module';
 export {
   NgbTimepickerModule,
