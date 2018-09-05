@@ -12,9 +12,11 @@ import { NgbdTabsetOrientation } from './demos/orientation/tabset-orientation';
 import { NgbdTabsetPills } from './demos/pills/tabset-pills';
 import { NgbdTabsetPreventchange } from './demos/preventchange/tabset-preventchange';
 import { NgbdTabsetSelectbyid } from './demos/selectbyid/tabset-selectbyid';
+import { NgbdTabsetDirectives } from './demos/directives/tabset-directives';
 
 const DEMO_DIRECTIVES = [
   NgbdTabsetBasic,
+  NgbdTabsetDirectives,
   NgbdTabsetPills,
   NgbdTabsetPreventchange,
   NgbdTabsetSelectbyid,
@@ -29,6 +31,12 @@ const DEMOS = {
     type: NgbdTabsetBasic,
     code: require('!!raw-loader!./demos/basic/tabset-basic'),
     markup: require('!!raw-loader!./demos/basic/tabset-basic.html')
+  },
+  directives: {
+    title: 'Directives',
+    type: NgbdTabsetDirectives,
+    code: require('!!raw-loader!./demos/directives/tabset-directives'),
+    markup: require('!!raw-loader!./demos/directives/tabset-directives.html')
   },
   pills: {
     title: 'Pills',
