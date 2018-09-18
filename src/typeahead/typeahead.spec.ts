@@ -203,29 +203,33 @@ describe('ngb-typeahead', () => {
          });
        }));
 
-    it('should be closed on document click', () => {
-      const fixture = createTestComponent(`<input type="text" [ngbTypeahead]="find"/>`);
-      const compiled = fixture.nativeElement;
+    it('should be closed on document click', fakeAsync(() => {
+         const fixture = createTestComponent(`<input type="text" [ngbTypeahead]="find"/>`);
+         const compiled = fixture.nativeElement;
 
-      changeInput(compiled, 'one');
-      fixture.detectChanges();
-      expect(getWindow(compiled)).not.toBeNull();
+         changeInput(compiled, 'one');
+         fixture.detectChanges();
+         expect(getWindow(compiled)).not.toBeNull();
 
-      fixture.nativeElement.click();
-      expect(getWindow(compiled)).toBeNull();
-    });
+         tick(16);
 
-    it('should not be closed on input click', () => {
-      const fixture = createTestComponent(`<input type="text" [ngbTypeahead]="find"/>`);
-      const compiled = fixture.nativeElement;
+         fixture.nativeElement.click();
+         expect(getWindow(compiled)).toBeNull();
+       }));
 
-      changeInput(compiled, 'one');
-      fixture.detectChanges();
-      expect(getWindow(compiled)).not.toBeNull();
+    it('should not be closed on input click', fakeAsync(() => {
+         const fixture = createTestComponent(`<input type="text" [ngbTypeahead]="find"/>`);
+         const compiled = fixture.nativeElement;
 
-      getNativeInput(compiled).click();
-      expect(getWindow(compiled)).not.toBeNull();
-    });
+         changeInput(compiled, 'one');
+         fixture.detectChanges();
+         expect(getWindow(compiled)).not.toBeNull();
+
+         tick(16);
+
+         getNativeInput(compiled).click();
+         expect(getWindow(compiled)).not.toBeNull();
+       }));
 
     it('should be closed when ESC is pressed', () => {
       const fixture = createTestComponent(`<input type="text" [ngbTypeahead]="find"/>`);

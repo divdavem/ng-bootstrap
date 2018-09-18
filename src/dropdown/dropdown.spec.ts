@@ -1,4 +1,4 @@
-import {ComponentFixture, inject, TestBed} from '@angular/core/testing';
+import {ComponentFixture, inject, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {createGenericTestComponent, createKeyEvent} from '../test/common';
 import {Key} from '../util/key';
 
@@ -302,57 +302,61 @@ describe('ngb-dropdown-toggle', () => {
     expect(compiled).not.toBeShown();
   });
 
-  it('should close on outside click', () => {
-    const html = `
+  it('should close on outside click', fakeAsync(() => {
+       const html = `
       <button>Outside</button>
       <div ngbDropdown [open]="true">
         <button ngbDropdownAnchor></button>
         <div ngbDropdownMenu></div>
       </div>`;
 
-    const fixture = createTestComponent(html);
-    const compiled = fixture.nativeElement;
-    const buttonEl = compiled.querySelector('button');
+       const fixture = createTestComponent(html);
+       const compiled = fixture.nativeElement;
+       const buttonEl = compiled.querySelector('button');
 
-    expect(compiled).toBeShown();
+       expect(compiled).toBeShown();
 
-    buttonEl.click();
-    fixture.detectChanges();
-    expect(compiled).not.toBeShown();
-  });
+       tick(16);
 
-  it('should close on inside click, outside click and escape when inside the OnPush component', () => {
-    const fixture = createTestComponent(`<test-click-close-on-push></test-click-close-on-push>`);
-    const compiled = fixture.nativeElement;
-    const toggleEl = compiled.querySelector('button');
-    const outsideEl = compiled.querySelector('.outside');
-    const insideEl = compiled.querySelector('.inside');
+       buttonEl.click();
+       fixture.detectChanges();
+       expect(compiled).not.toBeShown();
+     }));
 
-    const reopen = () => {
-      toggleEl.click();
-      fixture.detectChanges();
-      expect(compiled).toBeShown();
-    };
+  it('should close on inside click, outside click and escape when inside the OnPush component', fakeAsync(() => {
+       const fixture = createTestComponent(`<test-click-close-on-push></test-click-close-on-push>`);
+       const compiled = fixture.nativeElement;
+       const toggleEl = compiled.querySelector('button');
+       const outsideEl = compiled.querySelector('.outside');
+       const insideEl = compiled.querySelector('.inside');
 
-    // inside click
-    insideEl.click();
-    fixture.detectChanges();
-    expect(compiled).not.toBeShown();
+       const reopen = () => {
+         toggleEl.click();
+         fixture.detectChanges();
+         expect(compiled).toBeShown();
+       };
 
-
-    // outside click
-    reopen();
-    outsideEl.click();
-    fixture.detectChanges();
-    expect(compiled).not.toBeShown();
+       // inside click
+       tick(16);
+       insideEl.click();
+       fixture.detectChanges();
+       expect(compiled).not.toBeShown();
 
 
-    // escape
-    reopen();
-    document.dispatchEvent(createFakeEscapeKeyUpEvent());
-    fixture.detectChanges();
-    expect(compiled).not.toBeShown();
-  });
+       // outside click
+       reopen();
+       tick(16);
+       outsideEl.click();
+       fixture.detectChanges();
+       expect(compiled).not.toBeShown();
+
+
+       // escape
+       reopen();
+       document.dispatchEvent(createFakeEscapeKeyUpEvent());
+       fixture.detectChanges();
+       expect(compiled).not.toBeShown();
+     }));
 
   it('should not close on outside click if right button click', () => {
     const html = `
@@ -488,8 +492,8 @@ describe('ngb-dropdown-toggle', () => {
     expect(compiled).toBeShown();
   });
 
-  it('should close on item click by default', () => {
-    const html = `
+  it('should close on item click by default', fakeAsync(() => {
+       const html = `
       <div ngbDropdown [open]="true">
           <button ngbDropdownToggle>Toggle dropdown</button>
           <div ngbDropdownMenu aria-labelledby="dropdownMenu1">
@@ -497,20 +501,21 @@ describe('ngb-dropdown-toggle', () => {
           </div>
       </div>`;
 
-    const fixture = createTestComponent(html);
-    const compiled = fixture.nativeElement;
-    const linkEl = compiled.querySelector('a');
+       const fixture = createTestComponent(html);
+       const compiled = fixture.nativeElement;
+       const linkEl = compiled.querySelector('a');
 
-    expect(compiled).toBeShown();
+       expect(compiled).toBeShown();
 
-    linkEl.click();
-    fixture.detectChanges();
-    expect(compiled).not.toBeShown();
-  });
+       tick(16);
+       linkEl.click();
+       fixture.detectChanges();
+       expect(compiled).not.toBeShown();
+     }));
 
 
-  it('should close on other dropdown click', () => {
-    const html = `
+  it('should close on other dropdown click', fakeAsync(() => {
+       const html = `
       <div ngbDropdown>
           <button ngbDropdownToggle>Toggle dropdown 1</button>
           <div ngbDropdownMenu>
@@ -524,32 +529,33 @@ describe('ngb-dropdown-toggle', () => {
           </div>
       </div>`;
 
-    const fixture = createTestComponent(html);
-    const compiled = fixture.nativeElement;
+       const fixture = createTestComponent(html);
+       const compiled = fixture.nativeElement;
 
-    const buttonEls = compiled.querySelectorAll('button');
-    const dropdownEls = compiled.querySelectorAll('div[ngbDropdown]');
+       const buttonEls = compiled.querySelectorAll('button');
+       const dropdownEls = compiled.querySelectorAll('div[ngbDropdown]');
 
-    fixture.detectChanges();
-    expect(dropdownEls[0]).not.toHaveCssClass('show');
-    expect(dropdownEls[1]).not.toHaveCssClass('show');
+       fixture.detectChanges();
+       expect(dropdownEls[0]).not.toHaveCssClass('show');
+       expect(dropdownEls[1]).not.toHaveCssClass('show');
 
-    buttonEls[0].click();
-    fixture.detectChanges();
-    expect(dropdownEls[0]).toHaveCssClass('show');
-    expect(dropdownEls[1]).not.toHaveCssClass('show');
+       buttonEls[0].click();
+       fixture.detectChanges();
+       expect(dropdownEls[0]).toHaveCssClass('show');
+       expect(dropdownEls[1]).not.toHaveCssClass('show');
 
-    buttonEls[1].click();
-    fixture.detectChanges();
-    expect(dropdownEls[0]).not.toHaveCssClass('show');
-    expect(dropdownEls[1]).toHaveCssClass('show');
-  });
+       tick(16);
+       buttonEls[1].click();
+       fixture.detectChanges();
+       expect(dropdownEls[0]).not.toHaveCssClass('show');
+       expect(dropdownEls[1]).toHaveCssClass('show');
+     }));
 
   describe('outside and inside clicks', () => {
 
-    it('should not close on menu clicks when the "outside" option is used', () => {
+    it('should not close on menu clicks when the "outside" option is used', fakeAsync(() => {
 
-      const html = `
+         const html = `
       <div ngbDropdown [open]="true" autoClose="outside">
           <button ngbDropdownToggle>Toggle dropdown</button>
           <div ngbDropdownMenu>
@@ -557,27 +563,29 @@ describe('ngb-dropdown-toggle', () => {
           </div>
       </div>`;
 
-      const fixture = createTestComponent(html);
-      const compiled = fixture.nativeElement;
-      const buttonEl = compiled.querySelector('button');
-      const linkEl = compiled.querySelector('a');
+         const fixture = createTestComponent(html);
+         const compiled = fixture.nativeElement;
+         const buttonEl = compiled.querySelector('button');
+         const linkEl = compiled.querySelector('a');
 
-      expect(compiled).toBeShown();
+         expect(compiled).toBeShown();
 
-      // remains open on item click
-      linkEl.click();
-      fixture.detectChanges();
-      expect(compiled).toBeShown();
+         tick(16);
 
-      // but closes on toggle button click
-      buttonEl.click();
-      fixture.detectChanges();
-      expect(compiled).not.toBeShown();
-    });
+         // remains open on item click
+         linkEl.click();
+         fixture.detectChanges();
+         expect(compiled).toBeShown();
 
-    it('should not close on outside clicks when the "inside" option is used', () => {
+         // but closes on toggle button click
+         buttonEl.click();
+         fixture.detectChanges();
+         expect(compiled).not.toBeShown();
+       }));
 
-      const html = `
+    it('should not close on outside clicks when the "inside" option is used', fakeAsync(() => {
+
+         const html = `
       <button id="outside">Outside</button>
       <div ngbDropdown [open]="true" autoClose="inside">
           <button ngbDropdownToggle>Toggle dropdown</button>
@@ -586,23 +594,25 @@ describe('ngb-dropdown-toggle', () => {
           </div>
       </div>`;
 
-      const fixture = createTestComponent(html);
-      const compiled = fixture.nativeElement;
-      const buttonEl = compiled.querySelector('#outside');
-      const linkEl = compiled.querySelector('a');
+         const fixture = createTestComponent(html);
+         const compiled = fixture.nativeElement;
+         const buttonEl = compiled.querySelector('#outside');
+         const linkEl = compiled.querySelector('a');
 
-      expect(compiled).toBeShown();
+         expect(compiled).toBeShown();
 
-      // remains open on outside click
-      buttonEl.click();
-      fixture.detectChanges();
-      expect(compiled).toBeShown();
+         tick(16);
 
-      // but closes on item click
-      linkEl.click();
-      fixture.detectChanges();
-      expect(compiled).not.toBeShown();
-    });
+         // remains open on outside click
+         buttonEl.click();
+         fixture.detectChanges();
+         expect(compiled).toBeShown();
+
+         // but closes on item click
+         linkEl.click();
+         fixture.detectChanges();
+         expect(compiled).not.toBeShown();
+       }));
 
   });
 
