@@ -14,11 +14,10 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import {DOCUMENT} from '@angular/common';
-import {fromEvent, race, Subject, Subscription} from 'rxjs';
-import {filter, takeUntil} from 'rxjs/operators';
+import {Subject, Subscription} from 'rxjs';
 import {NgbDropdownConfig} from './dropdown-config';
 import {positionElements, PlacementArray, Placement} from '../util/positioning';
-import {Key} from '../util/key';
+import {AutoClose} from '../util/autoclose';
 
 /**
  */
@@ -143,7 +142,7 @@ export class NgbDropdown implements OnInit, OnDestroy {
 
   constructor(
       private _changeDetector: ChangeDetectorRef, config: NgbDropdownConfig, @Inject(DOCUMENT) private _document: any,
-      private _ngZone: NgZone) {
+      private _ngZone: NgZone, private _autoClose: AutoClose) {
     this.placement = config.placement;
     this.autoClose = config.autoClose;
     this._zoneSubscription = _ngZone.onStable.subscribe(() => { this._positionMenu(); });
@@ -178,18 +177,10 @@ export class NgbDropdown implements OnInit, OnDestroy {
 
   private _setCloseHandlers() {
     if (this.autoClose) {
-      this._ngZone.runOutsideAngular(() => {
-        const escapes$ = fromEvent<KeyboardEvent>(this._document, 'keyup')
-                             .pipe(takeUntil(this._closed$), filter(event => event.which === Key.Escape));
-
-        const clicks$ = fromEvent<MouseEvent>(this._document, 'click')
-                            .pipe(takeUntil(this._closed$), filter(event => this._shouldCloseFromClick(event)));
-
-        race<Event>([escapes$, clicks$]).pipe(takeUntil(this._closed$)).subscribe(() => this._ngZone.run(() => {
-          this.close();
-          this._changeDetector.markForCheck();
-        }));
-      });
+      this._autoClose.installAutoClose(event => this._shouldCloseFromClick(event), () => {
+        this.close();
+        this._changeDetector.markForCheck();
+      }, this._closed$);
     }
   }
 

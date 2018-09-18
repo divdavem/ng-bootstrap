@@ -20,13 +20,11 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {DOCUMENT} from '@angular/common';
-import {fromEvent, race} from 'rxjs';
-import {filter, takeUntil} from 'rxjs/operators';
 
 import {listenToTriggers} from '../util/triggers';
 import {positionElements, Placement, PlacementArray} from '../util/positioning';
 import {PopupService} from '../util/popup';
-import {Key} from '../util/key';
+import {AutoClose} from '../util/autoclose';
 
 import {NgbPopoverConfig} from './popover-config';
 
@@ -192,7 +190,7 @@ export class NgbPopover implements OnInit, OnDestroy, OnChanges {
   constructor(
       private _elementRef: ElementRef<HTMLElement>, private _renderer: Renderer2, injector: Injector,
       componentFactoryResolver: ComponentFactoryResolver, viewContainerRef: ViewContainerRef, config: NgbPopoverConfig,
-      private _ngZone: NgZone, @Inject(DOCUMENT) private _document: any) {
+      private _ngZone: NgZone, @Inject(DOCUMENT) private _document: any, private _autoClose: AutoClose) {
     this.autoClose = config.autoClose;
     this.placement = config.placement;
     this.triggers = config.triggers;
@@ -241,24 +239,7 @@ export class NgbPopover implements OnInit, OnDestroy, OnChanges {
               this.container === 'body'));
 
       if (this.autoClose) {
-        this._ngZone.runOutsideAngular(() => {
-          // prevents automatic closing right after an opening by putting a guard for the time of one event handling
-          // pass
-          // use case: click event would reach an element opening the popover first, then reach the autoClose handler
-          // which would close it
-          let justOpened = true;
-          requestAnimationFrame(() => justOpened = false);
-
-          const escapes$ = fromEvent<KeyboardEvent>(this._document, 'keyup')
-                               .pipe(takeUntil(this.hidden), filter(event => event.which === Key.Escape));
-
-          const clicks$ = fromEvent<MouseEvent>(this._document, 'click')
-                              .pipe(
-                                  takeUntil(this.hidden), filter(() => !justOpened),
-                                  filter(event => this._shouldCloseFromClick(event)));
-
-          race<Event>([escapes$, clicks$]).subscribe(() => this._ngZone.run(() => this.close()));
-        });
+        this._autoClose.installAutoClose(event => this._shouldCloseFromClick(event), () => this.close(), this.hidden);
       }
 
       this.shown.emit();

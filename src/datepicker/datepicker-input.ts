@@ -17,7 +17,6 @@ import {
   Inject
 } from '@angular/core';
 import {AbstractControl, ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG_VALIDATORS} from '@angular/forms';
-import {DOCUMENT} from '@angular/common';
 
 import {NgbDate} from './ngb-date';
 import {NgbDatepicker, NgbDatepickerNavigateEvent} from './datepicker';
@@ -27,6 +26,7 @@ import {NgbDateParserFormatter} from './ngb-date-parser-formatter';
 import {positionElements, PlacementArray} from '../util/positioning';
 import {ngbFocusTrap} from '../util/focus-trap';
 import {Key} from '../util/key';
+import {AutoClose} from '../util/autoclose';
 import {NgbDateStruct} from './ngb-date-struct';
 import {NgbDateAdapter} from './adapters/ngb-date-adapter';
 import {NgbCalendar} from './ngb-calendar';
@@ -192,7 +192,7 @@ export class NgbInputDatepicker implements OnChanges,
       private _parserFormatter: NgbDateParserFormatter, private _elRef: ElementRef<HTMLInputElement>,
       private _vcRef: ViewContainerRef, private _renderer: Renderer2, private _cfr: ComponentFactoryResolver,
       private _ngZone: NgZone, private _service: NgbDatepickerService, private _calendar: NgbCalendar,
-      private _dateAdapter: NgbDateAdapter<any>, @Inject(DOCUMENT) private _document: any) {
+      private _dateAdapter: NgbDateAdapter<any>, private _autoClose: AutoClose) {
     this._zoneSubscription = _ngZone.onStable.subscribe(() => {
       if (this._cRef) {
         positionElements(
@@ -285,29 +285,12 @@ export class NgbInputDatepicker implements OnChanges,
 
       this._cRef.instance.focus();
 
-      // closing on ESC and outside clicks
-      this._ngZone.runOutsideAngular(() => {
-
-        const escapes$ = fromEvent<KeyboardEvent>(this._document, 'keyup')
-                             .pipe(takeUntil(this._closed$), filter(e => e.which === Key.Escape));
-
-        let outsideClicks$;
-        if (this.autoClose === true || this.autoClose === 'outside') {
-          // we don't know how the popup was opened, so if it was opened with a click,
-          // we have to skip the first one to avoid closing it immediately
-          let isOpening = true;
-          requestAnimationFrame(() => isOpening = false);
-
-          outsideClicks$ =
-              fromEvent<MouseEvent>(this._document, 'click')
-                  .pipe(
-                      takeUntil(this._closed$), filter(event => !isOpening && this._shouldCloseOnOutsideClick(event)));
-        } else {
-          outsideClicks$ = NEVER;
-        }
-
-        race<Event>([escapes$, outsideClicks$]).subscribe(() => this._ngZone.run(() => this.close()));
-      });
+      if (this.autoClose) {
+        this._autoClose.installAutoClose(
+            event =>
+                (this.autoClose === 'outside' || this.autoClose === true) && this._shouldCloseOnOutsideClick(event),
+            () => this.close(), this._closed$);
+      }
     }
   }
 

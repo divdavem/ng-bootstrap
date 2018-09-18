@@ -16,7 +16,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {Observable, BehaviorSubject, Subscription, fromEvent} from 'rxjs';
+import {Observable, BehaviorSubject, Subscription, fromEvent, Subject} from 'rxjs';
 import {positionElements, PlacementArray} from '../util/positioning';
 import {NgbTypeaheadWindow, ResultTemplateContext} from './typeahead-window';
 import {PopupService} from '../util/popup';
@@ -25,6 +25,7 @@ import {Key} from '../util/key';
 import {Live} from '../util/accessibility/live';
 import {NgbTypeaheadConfig} from './typeahead-config';
 import {map, switchMap, tap} from 'rxjs/operators';
+import {AutoClose} from '../util/autoclose';
 
 const NGB_TYPEAHEAD_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -58,7 +59,6 @@ let nextWindowId = 0;
   host: {
     '(blur)': 'handleBlur()',
     '[class.open]': 'isPopupOpen()',
-    '(document:click)': 'onDocumentClick($event)',
     '(keydown)': 'handleKeyDown($event)',
     '[autocomplete]': 'autocomplete',
     'autocapitalize': 'off',
@@ -76,6 +76,7 @@ export class NgbTypeahead implements ControlValueAccessor,
     OnInit, OnDestroy {
   private _popupService: PopupService<NgbTypeaheadWindow>;
   private _subscription: Subscription;
+  private _close = new Subject();
   private _inputValueBackup: string;
   private _valueChanges: Observable<string>;
   private _resubscribeTypeahead: BehaviorSubject<any>;
@@ -155,7 +156,7 @@ export class NgbTypeahead implements ControlValueAccessor,
   constructor(
       private _elementRef: ElementRef<HTMLInputElement>, private _viewContainerRef: ViewContainerRef,
       private _renderer: Renderer2, private _injector: Injector, componentFactoryResolver: ComponentFactoryResolver,
-      config: NgbTypeaheadConfig, ngZone: NgZone, private _live: Live) {
+      config: NgbTypeaheadConfig, ngZone: NgZone, private _live: Live, private _autoClose: AutoClose) {
     this.container = config.container;
     this.editable = config.editable;
     this.focusFirst = config.focusFirst;
@@ -285,10 +286,19 @@ export class NgbTypeahead implements ControlValueAccessor,
       if (this.container === 'body') {
         window.document.querySelector(this.container).appendChild(this._windowRef.location.nativeElement);
       }
+
+      this._autoClose.installAutoClose(
+          event => this._shouldCloseFromClick(event), () => this._closePopup(), this._close);
     }
   }
 
+  private _shouldCloseFromClick(event: MouseEvent) {
+    return this._elementRef.nativeElement !== event.target &&
+        !this._windowRef.location.nativeElement.contains(event.target as HTMLElement);
+  }
+
   private _closePopup() {
+    this._close.next();
     this._popupService.close();
     this._windowRef = null;
     this.activeDescendant = undefined;
