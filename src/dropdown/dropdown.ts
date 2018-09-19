@@ -33,7 +33,7 @@ export class NgbDropdownMenu {
       @Inject(forwardRef(() => NgbDropdown)) public dropdown, private _elementRef: ElementRef<HTMLElement>,
       private _renderer: Renderer2) {}
 
-  isEventFrom($event) { return this._elementRef.nativeElement.contains($event.target); }
+  getNativeElement() { return this._elementRef.nativeElement; }
 
   position(triggerEl, placement) {
     this.applyPlacement(positionElements(triggerEl, this._elementRef.nativeElement, placement));
@@ -75,7 +75,7 @@ export class NgbDropdownAnchor {
     this.anchorEl = _elementRef.nativeElement;
   }
 
-  isEventFrom($event) { return this._elementRef.nativeElement.contains($event.target); }
+  getNativeElement() { return this._elementRef.nativeElement; }
 }
 
 /**
@@ -176,12 +176,14 @@ export class NgbDropdown implements OnInit, OnDestroy {
   }
 
   private _setCloseHandlers() {
-    if (this.autoClose) {
-      this._autoClose.installAutoClose(event => this._shouldCloseFromClick(event), () => {
-        this.close();
-        this._changeDetector.markForCheck();
-      }, this._closed$);
-    }
+    this._autoClose.installAutoClose(
+        this.autoClose,
+        () => {
+          this.close();
+          this._changeDetector.markForCheck();
+        },
+        this._closed$, this._menu ? [this._menu.getNativeElement()] : [],
+        this._anchor ? [this._anchor.getNativeElement()] : []);
   }
 
   /**
@@ -206,27 +208,10 @@ export class NgbDropdown implements OnInit, OnDestroy {
     }
   }
 
-  private _shouldCloseFromClick(event: MouseEvent) {
-    if (event.button !== 2 && !this._isEventFromToggle(event)) {
-      if (this.autoClose === true) {
-        return true;
-      } else if (this.autoClose === 'inside' && this._isEventFromMenu(event)) {
-        return true;
-      } else if (this.autoClose === 'outside' && !this._isEventFromMenu(event)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   ngOnDestroy() {
     this._closed$.next();
     this._zoneSubscription.unsubscribe();
   }
-
-  private _isEventFromToggle($event) { return this._anchor.isEventFrom($event); }
-
-  private _isEventFromMenu($event) { return this._menu ? this._menu.isEventFrom($event) : false; }
 
   private _positionMenu() {
     if (this.isOpen() && this._menu) {

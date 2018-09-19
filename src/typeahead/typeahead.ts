@@ -288,13 +288,9 @@ export class NgbTypeahead implements ControlValueAccessor,
       }
 
       this._autoClose.installAutoClose(
-          event => this._shouldCloseFromClick(event), () => this._closePopup(), this._close);
+          'outside', () => this._closePopup(), this._close,
+          [this._elementRef.nativeElement, this._windowRef.location.nativeElement]);
     }
-  }
-
-  private _shouldCloseFromClick(event: MouseEvent) {
-    return this._elementRef.nativeElement !== event.target &&
-        !this._windowRef.location.nativeElement.contains(event.target as HTMLElement);
   }
 
   private _closePopup() {

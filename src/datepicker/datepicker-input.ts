@@ -285,12 +285,10 @@ export class NgbInputDatepicker implements OnChanges,
 
       this._cRef.instance.focus();
 
-      if (this.autoClose) {
-        this._autoClose.installAutoClose(
-            event =>
-                (this.autoClose === 'outside' || this.autoClose === true) && this._shouldCloseOnOutsideClick(event),
-            () => this.close(), this._closed$);
-      }
+      const insideElements = [this._elRef.nativeElement, this._cRef.location.nativeElement];
+
+      this._autoClose.installAutoClose(
+          this.autoClose, () => this.close(), this._closed$, insideElements, insideElements);
     }
   }
 
@@ -356,10 +354,6 @@ export class NgbInputDatepicker implements OnChanges,
     this._renderer.addClass(nativeElement, 'dropdown-menu');
     this._renderer.setStyle(nativeElement, 'padding', '0');
     this._renderer.addClass(nativeElement, 'show');
-  }
-
-  private _shouldCloseOnOutsideClick(event: MouseEvent) {
-    return ![this._elRef.nativeElement, this._cRef.location.nativeElement].some(el => el.contains(event.target));
   }
 
   private _subscribeForDatepickerOutputs(datepickerInstance: NgbDatepicker) {
