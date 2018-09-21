@@ -10,7 +10,7 @@ import {NgbTooltipModule} from './tooltip.module';
 import {NgbTooltipWindow, NgbTooltip} from './tooltip';
 import {NgbTooltipConfig} from './tooltip-config';
 
-function dispatchEscapeKeyUpEvent() {
+function dispatchEscapeKeyDownEvent() {
   document.dispatchEvent(createKeyEvent(Key.Escape));
 }
 
@@ -552,7 +552,7 @@ describe('ngb-tooltip', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeOpen();
 
@@ -601,7 +601,7 @@ describe('ngb-tooltip', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeClosed();
          open();
@@ -652,7 +652,7 @@ describe('ngb-tooltip', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeClosed();
          open();
@@ -703,7 +703,7 @@ describe('ngb-tooltip', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeClosed();
          open();

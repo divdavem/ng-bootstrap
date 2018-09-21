@@ -64,7 +64,7 @@ export function isBrowser(browsers: Browser | Browser[], ua = window.navigator.u
 }
 
 export function createKeyEvent(key: Key, options: {type: 'keyup' | 'keydown'} = {
-  type: 'keyup'
+  type: 'keydown'
 }) {
   const event = document.createEvent('KeyboardEvent') as any;
   let initEvent = (event.initKeyEvent || event.initKeyboardEvent).bind(event);

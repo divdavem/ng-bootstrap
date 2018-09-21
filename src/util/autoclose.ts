@@ -25,7 +25,7 @@ export class AutoClose {
         requestAnimationFrame(() => justOpened = false);
 
         const escapes$ =
-            fromEvent<KeyboardEvent>(this._document, 'keyup').pipe(filter(event => event.which === Key.Escape));
+            fromEvent<KeyboardEvent>(this._document, 'keydown').pipe(filter(event => event.which === Key.Escape));
 
         const clicks$ = (autoClose === 'inside' && insideElements.length === 0) ?
             NEVER :

@@ -18,7 +18,7 @@ const createTestCmpt = (html: string) =>
 const createTestNativeCmpt = (html: string) =>
     createGenericTestComponent(html, TestNativeComponent) as ComponentFixture<TestNativeComponent>;
 
-function dispatchKeyUpEvent(key: Key) {
+function dispatchKeyDownEvent(key: Key) {
   document.dispatchEvent(createKeyEvent(key));
 }
 
@@ -84,7 +84,7 @@ describe('NgbInputDatepicker', () => {
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
       // dispatch escape
-      dispatchKeyUpEvent(Key.Escape);
+      dispatchKeyDownEvent(Key.Escape);
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
     });
 
@@ -171,7 +171,7 @@ describe('NgbInputDatepicker', () => {
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
       // escape
-      dispatchKeyUpEvent(Key.Escape);
+      dispatchKeyDownEvent(Key.Escape);
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
     });
 
@@ -206,7 +206,7 @@ describe('NgbInputDatepicker', () => {
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
       // escape
-      dispatchKeyUpEvent(Key.Escape);
+      dispatchKeyDownEvent(Key.Escape);
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
     });
 
@@ -242,7 +242,7 @@ describe('NgbInputDatepicker', () => {
          expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
          // escape
-         dispatchKeyUpEvent(Key.Escape);
+         dispatchKeyDownEvent(Key.Escape);
          expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
        }));
   });

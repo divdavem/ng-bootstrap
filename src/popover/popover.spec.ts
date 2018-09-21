@@ -18,7 +18,7 @@ import {NgbPopoverModule} from './popover.module';
 import {NgbPopoverWindow, NgbPopover} from './popover';
 import {NgbPopoverConfig} from './popover-config';
 
-function dispatchEscapeKeyUpEvent() {
+function dispatchEscapeKeyDownEvent() {
   document.dispatchEvent(createKeyEvent(Key.Escape));
 }
 
@@ -662,7 +662,7 @@ describe('ngb-popover', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeOpen();
 
@@ -711,7 +711,7 @@ describe('ngb-popover', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeClosed();
          open();
@@ -762,7 +762,7 @@ describe('ngb-popover', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeClosed();
          open();
@@ -813,7 +813,7 @@ describe('ngb-popover', () => {
 
          open();
 
-         dispatchEscapeKeyUpEvent();
+         dispatchEscapeKeyDownEvent();
          fixture.detectChanges();
          expectToBeClosed();
          open();

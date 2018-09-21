@@ -18,7 +18,7 @@ function getMenuEl(tc) {
   return tc.querySelector(`[ngbDropdownMenu]`);
 }
 
-function createFakeEscapeKeyUpEvent(): Event {
+function createFakeEscapeKeyDownEvent(): Event {
   return createKeyEvent(Key.Escape);
 }
 
@@ -353,7 +353,7 @@ describe('ngb-dropdown-toggle', () => {
 
        // escape
        reopen();
-       document.dispatchEvent(createFakeEscapeKeyUpEvent());
+       document.dispatchEvent(createFakeEscapeKeyDownEvent());
        fixture.detectChanges();
        expect(compiled).not.toBeShown();
      }));
@@ -410,7 +410,7 @@ describe('ngb-dropdown-toggle', () => {
       const compiled = fixture.nativeElement;
       expect(compiled).toBeShown();
 
-      document.dispatchEvent(createFakeEscapeKeyUpEvent());
+      document.dispatchEvent(createFakeEscapeKeyDownEvent());
       fixture.detectChanges();
       expect(compiled).not.toBeShown();
     });
@@ -426,7 +426,7 @@ describe('ngb-dropdown-toggle', () => {
 
       expect(compiled).toBeShown();
 
-      buttonElement.dispatchEvent(createFakeEscapeKeyUpEvent());
+      buttonElement.dispatchEvent(createFakeEscapeKeyDownEvent());
       fixture.detectChanges();
       expect(compiled).not.toBeShown();
     });
@@ -442,7 +442,7 @@ describe('ngb-dropdown-toggle', () => {
 
       expect(compiled).toBeShown();
 
-      buttonElement.dispatchEvent(createFakeEscapeKeyUpEvent());
+      buttonElement.dispatchEvent(createFakeEscapeKeyDownEvent());
       fixture.detectChanges();
       expect(compiled).toBeShown();
 
@@ -462,7 +462,7 @@ describe('ngb-dropdown-toggle', () => {
 
       expect(compiled).toBeShown();
 
-      document.dispatchEvent(createFakeEscapeKeyUpEvent());
+      document.dispatchEvent(createFakeEscapeKeyDownEvent());
       fixture.detectChanges();
       expect(compiled).toBeShown();
 
