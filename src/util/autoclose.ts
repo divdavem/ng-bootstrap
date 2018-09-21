@@ -1,7 +1,7 @@
 import {Injectable, NgZone, Inject} from '@angular/core';
 import {fromEvent, Observable, race, NEVER} from 'rxjs';
 import {DOCUMENT} from '@angular/common';
-import {takeUntil, filter} from 'rxjs/operators';
+import {takeUntil, filter, tap} from 'rxjs/operators';
 import {Key} from './key';
 
 const isHTMLElementContainedIn = (element: HTMLElement, array?: HTMLElement[]) =>
@@ -24,8 +24,8 @@ export class AutoClose {
         let justOpened = true;
         requestAnimationFrame(() => justOpened = false);
 
-        const escapes$ =
-            fromEvent<KeyboardEvent>(this._document, 'keydown').pipe(filter(event => event.which === Key.Escape));
+        const escapes$ = fromEvent<KeyboardEvent>(this._document, 'keydown')
+                             .pipe(filter(event => event.which === Key.Escape), tap(event => event.preventDefault()));
 
         const clicks$ = (autoClose === 'inside' && insideElements.length === 0) ?
             NEVER :

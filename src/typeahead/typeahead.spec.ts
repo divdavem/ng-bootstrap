@@ -1,5 +1,5 @@
 import {TestBed, ComponentFixture, async, fakeAsync, inject, tick} from '@angular/core/testing';
-import {createGenericTestComponent, isBrowser} from '../test/common';
+import {createGenericTestComponent, isBrowser, createKeyEvent} from '../test/common';
 import {expectResults, getWindowLinks} from '../test/typeahead/common';
 
 import {Component, DebugElement, ViewChild, ChangeDetectionStrategy} from '@angular/core';
@@ -25,7 +25,7 @@ const createAsyncTestComponent = (html: string) =>
     createGenericTestComponent(html, TestAsyncComponent) as ComponentFixture<TestAsyncComponent>;
 
 function createKeyDownEvent(key: number) {
-  const event = {which: key, preventDefault: () => {}, stopPropagation: () => {}};
+  const event = createKeyEvent(key);
   spyOn(event, 'preventDefault');
   spyOn(event, 'stopPropagation');
   return event;
@@ -240,7 +240,7 @@ describe('ngb-typeahead', () => {
       expect(getWindow(compiled)).not.toBeNull();
 
       const event = createKeyDownEvent(Key.Escape);
-      getDebugInput(fixture.debugElement).triggerEventHandler('keydown', event);
+      document.dispatchEvent(event);
       fixture.detectChanges();
       expect(getWindow(compiled)).toBeNull();
       expect(event.preventDefault).toHaveBeenCalled();
@@ -510,7 +510,7 @@ describe('ngb-typeahead', () => {
 
          // Press Escape while second is still in progress
          const event = createKeyDownEvent(Key.Escape);
-         getDebugInput(fixture.debugElement).triggerEventHandler('keydown', event);
+         document.dispatchEvent(event);
          fixture.detectChanges();
 
          // Results for second input are loaded (window shouldn't be opened in this case)
@@ -930,7 +930,7 @@ describe('ngb-typeahead', () => {
              expect(inputEl.selectionEnd).toBe(3);
 
              const event = createKeyDownEvent(Key.Escape);
-             getDebugInput(fixture.debugElement).triggerEventHandler('keydown', event);
+             document.dispatchEvent(event);
              fixture.detectChanges();
              expect(inputEl.value).toBe('on');
              expect(inputEl.selectionStart).toBe(2);
