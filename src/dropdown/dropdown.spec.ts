@@ -1,5 +1,5 @@
 import {ComponentFixture, inject, TestBed, fakeAsync, tick} from '@angular/core/testing';
-import {createGenericTestComponent, createKeyEvent} from '../test/common';
+import {createGenericTestComponent, createKeyEvent, sendClick} from '../test/common';
 import {Key} from '../util/key';
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
@@ -171,19 +171,19 @@ describe('ngb-dropdown', () => {
     const compiled = fixture.nativeElement;
     let buttonEls = compiled.querySelectorAll('button');
 
-    buttonEls[0].click();
+    sendClick(buttonEls[0]);
     fixture.detectChanges();
     expect(compiled).toBeShown();
 
-    buttonEls[1].click();
+    sendClick(buttonEls[1]);
     fixture.detectChanges();
     expect(compiled).not.toBeShown();
 
-    buttonEls[2].click();
+    sendClick(buttonEls[2]);
     fixture.detectChanges();
     expect(compiled).toBeShown();
 
-    buttonEls[2].click();
+    sendClick(buttonEls[2]);
     fixture.detectChanges();
     expect(compiled).not.toBeShown();
   });
@@ -199,12 +199,12 @@ describe('ngb-dropdown', () => {
 
     expect(fixture.componentInstance.isOpen).toBe(false);
 
-    buttonEl.click();
+    sendClick(buttonEl);
     fixture.detectChanges();
 
     expect(fixture.componentInstance.isOpen).toBe(true);
 
-    buttonEl.click();
+    sendClick(buttonEl);
     fixture.detectChanges();
 
     expect(fixture.componentInstance.isOpen).toBe(false);
@@ -223,22 +223,22 @@ describe('ngb-dropdown', () => {
     expect(fixture.componentInstance.isOpen).toBe(false);
     expect(fixture.componentInstance.stateChanges).toEqual([]);
 
-    buttonEls[1].click();  // close a closed one
+    sendClick(buttonEls[1]);  // close a closed one
     fixture.detectChanges();
     expect(fixture.componentInstance.isOpen).toBe(false);
     expect(fixture.componentInstance.stateChanges).toEqual([]);
 
-    buttonEls[0].click();  // open a closed one
+    sendClick(buttonEls[0]);  // open a closed one
     fixture.detectChanges();
     expect(fixture.componentInstance.isOpen).toBe(true);
     expect(fixture.componentInstance.stateChanges).toEqual([true]);
 
-    buttonEls[0].click();  // open an opened one
+    sendClick(buttonEls[0]);  // open an opened one
     fixture.detectChanges();
     expect(fixture.componentInstance.isOpen).toBe(true);
     expect(fixture.componentInstance.stateChanges).toEqual([true]);
 
-    buttonEls[1].click();  // close an opened one
+    sendClick(buttonEls[1]);  // close an opened one
     fixture.detectChanges();
     expect(fixture.componentInstance.isOpen).toBe(false);
     expect(fixture.componentInstance.stateChanges).toEqual([true, false]);
@@ -267,12 +267,12 @@ describe('ngb-dropdown-toggle', () => {
     expect(buttonEl.getAttribute('aria-haspopup')).toBe('true');
     expect(buttonEl.getAttribute('aria-expanded')).toBe('false');
 
-    buttonEl.click();
+    sendClick(buttonEl);
     fixture.detectChanges();
     expect(compiled).toBeShown();
     expect(buttonEl.getAttribute('aria-expanded')).toBe('true');
 
-    buttonEl.click();
+    sendClick(buttonEl);
     fixture.detectChanges();
     expect(compiled).not.toBeShown();
     expect(buttonEl.getAttribute('aria-expanded')).toBe('false');
@@ -293,11 +293,11 @@ describe('ngb-dropdown-toggle', () => {
 
     expect(compiled).not.toBeShown();
 
-    toggleEl.click();
+    sendClick(toggleEl);
     fixture.detectChanges();
     expect(compiled).toBeShown();
 
-    toggleEl.click();
+    sendClick(toggleEl);
     fixture.detectChanges();
     expect(compiled).not.toBeShown();
   });
@@ -318,7 +318,8 @@ describe('ngb-dropdown-toggle', () => {
 
        tick(16);
 
-       buttonEl.click();
+       sendClick(buttonEl);
+       tick(16);
        fixture.detectChanges();
        expect(compiled).not.toBeShown();
      }));
@@ -331,14 +332,15 @@ describe('ngb-dropdown-toggle', () => {
        const insideEl = compiled.querySelector('.inside');
 
        const reopen = () => {
-         toggleEl.click();
+         sendClick(toggleEl);
          fixture.detectChanges();
          expect(compiled).toBeShown();
        };
 
        // inside click
        tick(16);
-       insideEl.click();
+       sendClick(insideEl);
+       tick(16);
        fixture.detectChanges();
        expect(compiled).not.toBeShown();
 
@@ -346,7 +348,8 @@ describe('ngb-dropdown-toggle', () => {
        // outside click
        reopen();
        tick(16);
-       outsideEl.click();
+       sendClick(outsideEl);
+       tick(16);
        fixture.detectChanges();
        expect(compiled).not.toBeShown();
 
@@ -393,7 +396,7 @@ describe('ngb-dropdown-toggle', () => {
 
     expect(compiled).toBeShown();
 
-    buttonEl.click();
+    sendClick(buttonEl);
     fixture.detectChanges();
     expect(compiled).toBeShown();
   });
@@ -446,7 +449,7 @@ describe('ngb-dropdown-toggle', () => {
       fixture.detectChanges();
       expect(compiled).toBeShown();
 
-      buttonElement.click();
+      sendClick(buttonElement);
       fixture.detectChanges();
       expect(compiled).not.toBeShown();
     });
@@ -466,7 +469,7 @@ describe('ngb-dropdown-toggle', () => {
       fixture.detectChanges();
       expect(compiled).toBeShown();
 
-      buttonElement.click();
+      sendClick(buttonElement);
       fixture.detectChanges();
       expect(compiled).not.toBeShown();
     });
@@ -487,7 +490,7 @@ describe('ngb-dropdown-toggle', () => {
 
     expect(compiled).toBeShown();
 
-    linkEl.click();
+    sendClick(linkEl);
     fixture.detectChanges();
     expect(compiled).toBeShown();
   });
@@ -508,7 +511,8 @@ describe('ngb-dropdown-toggle', () => {
        expect(compiled).toBeShown();
 
        tick(16);
-       linkEl.click();
+       sendClick(linkEl);
+       tick(16);
        fixture.detectChanges();
        expect(compiled).not.toBeShown();
      }));
@@ -539,13 +543,15 @@ describe('ngb-dropdown-toggle', () => {
        expect(dropdownEls[0]).not.toHaveCssClass('show');
        expect(dropdownEls[1]).not.toHaveCssClass('show');
 
-       buttonEls[0].click();
+       sendClick(buttonEls[0]);
+       tick(16);
        fixture.detectChanges();
        expect(dropdownEls[0]).toHaveCssClass('show');
        expect(dropdownEls[1]).not.toHaveCssClass('show');
 
        tick(16);
-       buttonEls[1].click();
+       sendClick(buttonEls[1]);
+       tick(16);
        fixture.detectChanges();
        expect(dropdownEls[0]).not.toHaveCssClass('show');
        expect(dropdownEls[1]).toHaveCssClass('show');
@@ -573,12 +579,12 @@ describe('ngb-dropdown-toggle', () => {
          tick(16);
 
          // remains open on item click
-         linkEl.click();
+         sendClick(linkEl);
          fixture.detectChanges();
          expect(compiled).toBeShown();
 
          // but closes on toggle button click
-         buttonEl.click();
+         sendClick(buttonEl);
          fixture.detectChanges();
          expect(compiled).not.toBeShown();
        }));
@@ -604,12 +610,14 @@ describe('ngb-dropdown-toggle', () => {
          tick(16);
 
          // remains open on outside click
-         buttonEl.click();
+         sendClick(buttonEl);
+         tick(16);
          fixture.detectChanges();
          expect(compiled).toBeShown();
 
          // but closes on item click
-         linkEl.click();
+         sendClick(linkEl);
+         tick(16);
          fixture.detectChanges();
          expect(compiled).not.toBeShown();
        }));

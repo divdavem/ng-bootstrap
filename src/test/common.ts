@@ -73,3 +73,13 @@ export function createKeyEvent(key: Key, options: {type: 'keyup' | 'keydown'} = 
 
   return event;
 }
+
+export function sendClick(item: HTMLElement) {
+  const mouseDown = document.createEvent('MouseEvent');
+  mouseDown.initEvent('mousedown', true, true);
+  item.dispatchEvent(mouseDown);
+  const mouseUp = document.createEvent('MouseEvent');
+  mouseUp.initEvent('mouseup', true, true);
+  item.dispatchEvent(mouseUp);
+  item.click();
+}

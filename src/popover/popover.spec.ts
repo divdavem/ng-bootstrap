@@ -1,5 +1,5 @@
 import {TestBed, ComponentFixture, inject, fakeAsync, tick} from '@angular/core/testing';
-import {createGenericTestComponent, createKeyEvent} from '../test/common';
+import {createGenericTestComponent, createKeyEvent, sendClick} from '../test/common';
 
 import {By} from '@angular/platform-browser';
 import {
@@ -577,11 +577,11 @@ describe('ngb-popover', () => {
                 <button (click)="t.toggle()">T</button>`);
       const button = fixture.nativeElement.querySelector('button');
 
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(getWindow(fixture.nativeElement)).not.toBeNull();
 
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(getWindow(fixture.nativeElement)).toBeNull();
     });
@@ -592,11 +592,11 @@ describe('ngb-popover', () => {
                 <button (click)="t.close()">C</button>`);
       const buttons = fixture.nativeElement.querySelectorAll('button');
 
-      buttons[0].click();  // open
+      sendClick(buttons[0]);  // open
       fixture.detectChanges();
       expect(getWindow(fixture.nativeElement)).not.toBeNull();
 
-      buttons[1].click();  // close
+      sendClick(buttons[1]);  // close
       fixture.detectChanges();
       expect(getWindow(fixture.nativeElement)).toBeNull();
     });
@@ -607,11 +607,11 @@ describe('ngb-popover', () => {
                 <button (click)="t.open()">O</button>`);
       const button = fixture.nativeElement.querySelector('button');
 
-      button.click();  // open
+      sendClick(button);  // open
       fixture.detectChanges();
       expect(getWindow(fixture.nativeElement)).not.toBeNull();
 
-      button.click();  // open
+      sendClick(button);  // open
       fixture.detectChanges();
       expect(getWindow(fixture.nativeElement)).not.toBeNull();
     });
@@ -622,7 +622,7 @@ describe('ngb-popover', () => {
                 <button (click)="t.close()">C</button>`);
       const button = fixture.nativeElement.querySelector('button');
 
-      button.click();  // close
+      sendClick(button);  // close
       fixture.detectChanges();
       expect(getWindow(fixture.nativeElement)).toBeNull();
     });
@@ -653,7 +653,7 @@ describe('ngb-popover', () => {
          const target = select('#target');
          let popover;
          const open = () => {
-           target.click();
+           sendClick(target);
            tick(16);
            fixture.detectChanges();
            expectToBeOpen();
@@ -666,15 +666,15 @@ describe('ngb-popover', () => {
          fixture.detectChanges();
          expectToBeOpen();
 
-         outside.click();
+         sendClick(outside);
          fixture.detectChanges();
          expectToBeOpen();
 
-         popover.click();
+         sendClick(popover);
          fixture.detectChanges();
          expectToBeOpen();
 
-         target.click();
+         sendClick(target);
          fixture.detectChanges();
          expectToBeOpen();
        }));
@@ -702,7 +702,7 @@ describe('ngb-popover', () => {
          const target = select('#target');
          let popover;
          const open = () => {
-           target.click();
+           sendClick(target);
            tick(16);
            fixture.detectChanges();
            expectToBeOpen();
@@ -716,16 +716,19 @@ describe('ngb-popover', () => {
          expectToBeClosed();
          open();
 
-         popover.click();
+         sendClick(popover);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         outside.click();
+         sendClick(outside);
+         tick(16);
          fixture.detectChanges();
          expectToBeOpen();
 
-         target.click();
+         sendClick(target);
+         tick(16);
          fixture.detectChanges();
          expectToBeOpen();
        }));
@@ -753,7 +756,7 @@ describe('ngb-popover', () => {
          const target = select('#target');
          let popover;
          const open = () => {
-           target.click();
+           sendClick(target);
            fixture.detectChanges();
            tick(16);
            expectToBeOpen();
@@ -767,16 +770,19 @@ describe('ngb-popover', () => {
          expectToBeClosed();
          open();
 
-         outside.click();
+         sendClick(outside);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         popover.click();
+         sendClick(popover);
+         tick(16);
          fixture.detectChanges();
          expectToBeOpen();
 
-         target.click();
+         sendClick(target);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
        }));
@@ -804,7 +810,7 @@ describe('ngb-popover', () => {
          const target = select('#target');
          let popover;
          const open = () => {
-           target.click();
+           sendClick(target);
            tick(16);
            fixture.detectChanges();
            expectToBeOpen();
@@ -818,17 +824,20 @@ describe('ngb-popover', () => {
          expectToBeClosed();
          open();
 
-         outside.click();
+         sendClick(outside);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         popover.click();
+         sendClick(popover);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         target.click();
+         sendClick(target);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
        }));

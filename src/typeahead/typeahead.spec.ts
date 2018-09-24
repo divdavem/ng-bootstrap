@@ -1,5 +1,5 @@
 import {TestBed, ComponentFixture, async, fakeAsync, inject, tick} from '@angular/core/testing';
-import {createGenericTestComponent, isBrowser, createKeyEvent} from '../test/common';
+import {createGenericTestComponent, isBrowser, createKeyEvent, sendClick} from '../test/common';
 import {expectResults, getWindowLinks} from '../test/typeahead/common';
 
 import {Component, DebugElement, ViewChild, ChangeDetectionStrategy} from '@angular/core';
@@ -213,7 +213,8 @@ describe('ngb-typeahead', () => {
 
          tick(16);
 
-         fixture.nativeElement.click();
+         sendClick(fixture.nativeElement);
+         tick(16);
          expect(getWindow(compiled)).toBeNull();
        }));
 
@@ -227,7 +228,8 @@ describe('ngb-typeahead', () => {
 
          tick(16);
 
-         getNativeInput(compiled).click();
+         sendClick(getNativeInput(compiled));
+         tick(16);
          expect(getWindow(compiled)).not.toBeNull();
        }));
 

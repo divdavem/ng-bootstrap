@@ -1,5 +1,5 @@
 import {TestBed, ComponentFixture, inject, fakeAsync, tick} from '@angular/core/testing';
-import {createGenericTestComponent, createKeyEvent} from '../test/common';
+import {createGenericTestComponent, createKeyEvent, sendClick} from '../test/common';
 
 import {By} from '@angular/platform-browser';
 import {Component, ViewChild, ChangeDetectionStrategy, TemplateRef, ViewContainerRef} from '@angular/core';
@@ -365,11 +365,11 @@ describe('ngb-tooltip', () => {
                 <button (click)="t.toggle()">T</button>`);
         const button = fixture.nativeElement.querySelector('button');
 
-        button.click();
+        sendClick(button);
         fixture.detectChanges();
         expect(getWindow(fixture.nativeElement)).not.toBeNull();
 
-        button.click();
+        sendClick(button);
         fixture.detectChanges();
         expect(getWindow(fixture.nativeElement)).toBeNull();
       });
@@ -382,11 +382,11 @@ describe('ngb-tooltip', () => {
 
         const buttons = fixture.nativeElement.querySelectorAll('button');
 
-        buttons[0].click();  // open
+        sendClick(buttons[0]);  // open
         fixture.detectChanges();
         expect(getWindow(fixture.nativeElement)).not.toBeNull();
 
-        buttons[1].click();  // close
+        sendClick(buttons[1]);  // close
         fixture.detectChanges();
         expect(getWindow(fixture.nativeElement)).toBeNull();
       });
@@ -397,11 +397,11 @@ describe('ngb-tooltip', () => {
                 <button (click)="t.open()">O</button>`);
         const button = fixture.nativeElement.querySelector('button');
 
-        button.click();  // open
+        sendClick(button);  // open
         fixture.detectChanges();
         expect(getWindow(fixture.nativeElement)).not.toBeNull();
 
-        button.click();  // open
+        sendClick(button);  // open
         fixture.detectChanges();
         expect(getWindow(fixture.nativeElement)).not.toBeNull();
       });
@@ -413,7 +413,7 @@ describe('ngb-tooltip', () => {
 
         const button = fixture.nativeElement.querySelector('button');
 
-        button.click();  // close
+        sendClick(button);  // close
         fixture.detectChanges();
         expect(getWindow(fixture.nativeElement)).toBeNull();
       });
@@ -543,7 +543,7 @@ describe('ngb-tooltip', () => {
          const target = select('#target');
          let tooltip;
          const open = () => {
-           target.click();
+           sendClick(target);
            tick(16);
            fixture.detectChanges();
            expectToBeOpen();
@@ -556,15 +556,15 @@ describe('ngb-tooltip', () => {
          fixture.detectChanges();
          expectToBeOpen();
 
-         outside.click();
+         sendClick(outside);
          fixture.detectChanges();
          expectToBeOpen();
 
-         tooltip.click();
+         sendClick(tooltip);
          fixture.detectChanges();
          expectToBeOpen();
 
-         target.click();
+         sendClick(target);
          fixture.detectChanges();
          expectToBeOpen();
        }));
@@ -592,7 +592,7 @@ describe('ngb-tooltip', () => {
          const target = select('#target');
          let tooltip;
          const open = () => {
-           target.click();
+           sendClick(target);
            tick(16);
            fixture.detectChanges();
            expectToBeOpen();
@@ -606,16 +606,19 @@ describe('ngb-tooltip', () => {
          expectToBeClosed();
          open();
 
-         tooltip.click();
+         sendClick(tooltip);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         outside.click();
+         sendClick(outside);
+         tick(16);
          fixture.detectChanges();
          expectToBeOpen();
 
-         target.click();
+         sendClick(target);
+         tick(16);
          fixture.detectChanges();
          expectToBeOpen();
        }));
@@ -643,7 +646,7 @@ describe('ngb-tooltip', () => {
          const target = select('#target');
          let tooltip;
          const open = () => {
-           target.click();
+           sendClick(target);
            fixture.detectChanges();
            tick(16);
            expectToBeOpen();
@@ -657,16 +660,19 @@ describe('ngb-tooltip', () => {
          expectToBeClosed();
          open();
 
-         outside.click();
+         sendClick(outside);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         tooltip.click();
+         sendClick(tooltip);
+         tick(16);
          fixture.detectChanges();
          expectToBeOpen();
 
-         target.click();
+         sendClick(target);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
        }));
@@ -694,7 +700,7 @@ describe('ngb-tooltip', () => {
          const target = select('#target');
          let tooltip;
          const open = () => {
-           target.click();
+           sendClick(target);
            tick(16);
            fixture.detectChanges();
            expectToBeOpen();
@@ -708,17 +714,20 @@ describe('ngb-tooltip', () => {
          expectToBeClosed();
          open();
 
-         outside.click();
+         sendClick(outside);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         tooltip.click();
+         sendClick(tooltip);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
          open();
 
-         target.click();
+         sendClick(target);
+         tick(16);
          fixture.detectChanges();
          expectToBeClosed();
        }));

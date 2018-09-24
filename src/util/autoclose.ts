@@ -1,7 +1,7 @@
 import {Injectable, NgZone, Inject} from '@angular/core';
 import {fromEvent, Observable, race, NEVER} from 'rxjs';
 import {DOCUMENT} from '@angular/common';
-import {takeUntil, filter, tap} from 'rxjs/operators';
+import {takeUntil, filter, tap, delay} from 'rxjs/operators';
 import {Key} from './key';
 
 const isHTMLElementContainedIn = (element: HTMLElement, array?: HTMLElement[]) =>
@@ -29,10 +29,10 @@ export class AutoClose {
 
         const clicks$ = (autoClose === 'inside' && insideElements.length === 0) ?
             NEVER :
-            fromEvent<MouseEvent>(this._document, 'click')
-                .pipe(filter(() => !justOpened), filter((event: MouseEvent) => {
+            fromEvent<MouseEvent>(this._document, 'mouseup')
+                .pipe(delay(0), filter((event: MouseEvent) => {
                         const element = event.target as HTMLElement;
-                        if (isHTMLElementContainedIn(element, ignoreElements)) {
+                        if (justOpened || event.button !== 0 || isHTMLElementContainedIn(element, ignoreElements)) {
                           return false;
                         }
                         if (autoClose === 'inside') {

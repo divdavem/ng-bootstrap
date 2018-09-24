@@ -1,6 +1,6 @@
 import {TestBed, ComponentFixture, fakeAsync, tick} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
-import {createGenericTestComponent, createKeyEvent} from '../test/common';
+import {createGenericTestComponent, createKeyEvent, sendClick} from '../test/common';
 
 import {Component, Injectable} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
@@ -39,19 +39,19 @@ describe('NgbInputDatepicker', () => {
 
       const buttons = fixture.nativeElement.querySelectorAll('button');
 
-      buttons[0].click();  // open
+      sendClick(buttons[0]);  // open
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
-      buttons[1].click();  // close
+      sendClick(buttons[1]);  // close
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
 
-      buttons[2].click();  // toggle
+      sendClick(buttons[2]);  // toggle
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
-      buttons[2].click();  // toggle
+      sendClick(buttons[2]);  // toggle
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
     });
@@ -67,7 +67,7 @@ describe('NgbInputDatepicker', () => {
 
       // open
       const button = fixture.nativeElement.querySelector('button');
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(document.activeElement).toBe(fixture.nativeElement.querySelector('div.ngb-dp-day[tabindex="0"]'));
     });
@@ -79,7 +79,7 @@ describe('NgbInputDatepicker', () => {
 
       // open
       const button = fixture.nativeElement.querySelector('button');
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
@@ -95,7 +95,7 @@ describe('NgbInputDatepicker', () => {
 
       // open
       const button = fixture.nativeElement.querySelector('button');
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
@@ -115,14 +115,15 @@ describe('NgbInputDatepicker', () => {
 
          // open
          const button = fixture.nativeElement.querySelector('button');
-         button.click();
+         sendClick(button);
          fixture.detectChanges();
          tick(16);  // flushing RAF in .open()
          expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
          // click outside
          const outsideButton = fixture.nativeElement.querySelector('#outside-button');
-         outsideButton.click();
+         sendClick(outsideButton);
+         tick(16);
          fixture.detectChanges();
          expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
        }));
@@ -134,13 +135,13 @@ describe('NgbInputDatepicker', () => {
 
       // open
       const button = fixture.nativeElement.querySelector('button');
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
       // click on input
       const input = fixture.nativeElement.querySelector('input[ngbDatepicker]');
-      input.click();
+      sendClick(input);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
     });
@@ -154,7 +155,7 @@ describe('NgbInputDatepicker', () => {
 
       // open
       const button = fixture.nativeElement.querySelector('button');
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
@@ -166,7 +167,7 @@ describe('NgbInputDatepicker', () => {
 
       // click outside
       const outsideButton = fixture.nativeElement.querySelector('#outside-button');
-      outsideButton.click();
+      sendClick(outsideButton);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
@@ -184,13 +185,13 @@ describe('NgbInputDatepicker', () => {
 
       // open
       const button = fixture.nativeElement.querySelector('button');
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
       // click outside
       const outsideButton = fixture.nativeElement.querySelector('#outside-button');
-      outsideButton.click();
+      sendClick(outsideButton);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
@@ -201,7 +202,7 @@ describe('NgbInputDatepicker', () => {
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
 
       // open
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
@@ -219,7 +220,7 @@ describe('NgbInputDatepicker', () => {
 
          // open
          const button = fixture.nativeElement.querySelector('button');
-         button.click();
+         sendClick(button);
          fixture.detectChanges();
          tick(16);  // flushing RAF in .open()
          expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
@@ -232,12 +233,13 @@ describe('NgbInputDatepicker', () => {
 
          // click outside
          const outsideButton = fixture.nativeElement.querySelector('#outside-button');
-         outsideButton.click();
+         sendClick(outsideButton);
+         tick(16);
          fixture.detectChanges();
          expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
 
          // open
-         button.click();
+         sendClick(button);
          fixture.detectChanges();
          expect(fixture.nativeElement.querySelector('ngb-datepicker')).not.toBeNull();
 
@@ -273,7 +275,7 @@ describe('NgbInputDatepicker', () => {
          const button = fixture.nativeElement.querySelector('button');
          const input = fixture.nativeElement.querySelector('input');
 
-         button.click();  // open
+         sendClick(button);  // open
          tick();
          fixture.detectChanges();
 
@@ -399,7 +401,7 @@ describe('NgbInputDatepicker', () => {
          const button = fixture.nativeElement.querySelector('button');
          const input = fixture.nativeElement.querySelector('input');
 
-         button.click();  // open
+         sendClick(button);  // open
          tick();
          fixture.detectChanges();
          const buttonInDatePicker = fixture.nativeElement.querySelector('ngb-datepicker button');
@@ -440,7 +442,7 @@ describe('NgbInputDatepicker', () => {
 
       expect(input.disabled).toBeTruthy();
 
-      button.click();  // open
+      sendClick(button);  // open
       fixture.detectChanges();
       const buttonInDatePicker = fixture.nativeElement.querySelector('ngb-datepicker button');
 
@@ -832,7 +834,7 @@ describe('NgbInputDatepicker', () => {
       fixture.detectChanges();
 
       // click on a date
-      fixture.nativeElement.querySelectorAll('.ngb-dp-day')[3].click();  // 1 MAR 2018
+      sendClick(fixture.nativeElement.querySelectorAll('.ngb-dp-day')[3]);  // 1 MAR 2018
       fixture.detectChanges();
       expect(fixture.componentInstance.onDateSelect).toHaveBeenCalledTimes(1);
       expect(fixture.componentInstance.onModelChange).toHaveBeenCalledTimes(1);
@@ -842,7 +844,7 @@ describe('NgbInputDatepicker', () => {
       fixture.detectChanges();
 
       // click the same date
-      fixture.nativeElement.querySelectorAll('.ngb-dp-day')[3].click();  // 1 MAR 2018
+      sendClick(fixture.nativeElement.querySelectorAll('.ngb-dp-day')[3]);  // 1 MAR 2018
       fixture.detectChanges();
       expect(fixture.componentInstance.onDateSelect).toHaveBeenCalledTimes(2);
       expect(fixture.componentInstance.onModelChange).toHaveBeenCalledTimes(1);
@@ -863,7 +865,7 @@ describe('NgbInputDatepicker', () => {
 
       // open date-picker
       const button = fixture.nativeElement.querySelector('button');
-      button.click();
+      sendClick(button);
       fixture.detectChanges();
 
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
@@ -880,14 +882,14 @@ describe('NgbInputDatepicker', () => {
 
       // open date-picker
       const buttons = fixture.nativeElement.querySelectorAll('button');
-      buttons[0].click();  // open button
+      sendClick(buttons[0]);  // open button
       fixture.detectChanges();
 
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
       expect(document.querySelector(selector).querySelector('ngb-datepicker')).not.toBeNull();
 
       // close date-picker
-      buttons[1].click();  // close button
+      sendClick(buttons[1]);  // close button
       fixture.detectChanges();
 
       expect(fixture.nativeElement.querySelector('ngb-datepicker')).toBeNull();
