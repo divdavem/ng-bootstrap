@@ -52,25 +52,33 @@ export class NgbSlide {
   host: {
     'class': 'carousel slide',
     '[style.display]': '"block"',
-    'tabIndex': '0',
     '(keydown.arrowLeft)': 'keyboard && prev(NgbSlideEventSource.ARROW_LEFT)',
     '(keydown.arrowRight)': 'keyboard && next(NgbSlideEventSource.ARROW_RIGHT)'
   },
   template: `
-    <ol class="carousel-indicators" *ngIf="showNavigationIndicators">
-      <li *ngFor="let slide of slides" [id]="slide.id" [class.active]="slide.id === activeId"
+    <ol class="carousel-indicators" *ngIf="showNavigationIndicators" aria-hidden="true">
+      <li *ngFor="let slide of slides" [class.active]="slide.id === activeId"
           (click)="select(slide.id, NgbSlideEventSource.INDICATOR)"></li>
     </ol>
     <div class="carousel-inner">
-      <div *ngFor="let slide of slides" class="carousel-item" [class.active]="slide.id === activeId">
+      <div *ngFor="let slide of slides; let i=index;" [id]="slide.id" class="carousel-item" [class.active]="slide.id === activeId">
+        <span class="sr-only" i18n="Currently selected slide number read by screen reader@@ngb.carousel.slide">
+          Slide {{i + 1}} of {{slides.length}}
+        </span>
         <ng-template [ngTemplateOutlet]="slide.tplRef"></ng-template>
       </div>
     </div>
-    <a class="carousel-control-prev" role="button" (click)="prev(NgbSlideEventSource.ARROW_LEFT)" *ngIf="showNavigationArrows">
+    <a class="carousel-control-prev" href="#" role="button"
+      [attr.aria-describedby]="activeId" [attr.aria-controls]="activeId"
+      (keydown.space)="$event.preventDefault();prev(NgbSlideEventSource.ARROW_LEFT)"
+      (click)="$event.preventDefault();prev(NgbSlideEventSource.ARROW_LEFT)" *ngIf="showNavigationArrows">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="sr-only" i18n="@@ngb.carousel.previous">Previous</span>
     </a>
-    <a class="carousel-control-next" role="button" (click)="next(NgbSlideEventSource.ARROW_RIGHT)" *ngIf="showNavigationArrows">
+    <a class="carousel-control-next" href="#" role="button"
+      [attr.aria-describedby]="activeId" [attr.aria-controls]="activeId"
+      (keydown.space)="$event.preventDefault();next(NgbSlideEventSource.ARROW_RIGHT)"
+      (click)="$event.preventDefault();next(NgbSlideEventSource.ARROW_RIGHT)" *ngIf="showNavigationArrows">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="sr-only" i18n="@@ngb.carousel.next">Next</span>
     </a>
@@ -85,7 +93,9 @@ export class NgbCarousel implements AfterContentChecked,
   private _destroy$ = new Subject<void>();
   private _interval$ = new BehaviorSubject(0);
   private _mouseHover$ = new BehaviorSubject(false);
+  private _focused$ = new BehaviorSubject(false);
   private _pauseOnHover$ = new BehaviorSubject(false);
+  private _pauseOnFocus$ = new BehaviorSubject(false);
   private _pause$ = new BehaviorSubject(false);
   private _wrap$ = new BehaviorSubject(false);
 
@@ -134,6 +144,16 @@ export class NgbCarousel implements AfterContentChecked,
   get pauseOnHover() { return this._pauseOnHover$.value; }
 
   /**
+   * If `true`, will pause slide switching when the focus is inside the carousel.
+   */
+  @Input()
+  set pauseOnFocus(value: boolean) {
+    this._pauseOnFocus$.next(value);
+  }
+
+  get pauseOnFocus() { return this._pauseOnFocus$.value; }
+
+  /**
    * If `true`, 'previous' and 'next' navigation arrows will be visible on the slide.
    *
    * @since 2.2.0
@@ -161,6 +181,7 @@ export class NgbCarousel implements AfterContentChecked,
     this.wrap = config.wrap;
     this.keyboard = config.keyboard;
     this.pauseOnHover = config.pauseOnHover;
+    this.pauseOnFocus = config.pauseOnFocus;
     this.showNavigationArrows = config.showNavigationArrows;
     this.showNavigationIndicators = config.showNavigationIndicators;
   }
@@ -173,6 +194,16 @@ export class NgbCarousel implements AfterContentChecked,
   @HostListener('mouseleave')
   mouseLeave() {
     this._mouseHover$.next(false);
+  }
+
+  @HostListener('focusin')
+  focusin() {
+    this._focused$.next(true);
+  }
+
+  @HostListener('focusout')
+  focusout() {
+    this._focused$.next(false);
   }
 
   ngAfterContentInit() {
@@ -190,10 +221,14 @@ export class NgbCarousel implements AfterContentChecked,
                                         return wrap ? slideArr.length > 1 : currentSlideIdx < slideArr.length - 1;
                                       }),
                                       distinctUntilChanged());
-        combineLatest(this._pause$, this._pauseOnHover$, this._mouseHover$, this._interval$, hasNextSlide$)
+        combineLatest(
+            this._pause$, this._pauseOnHover$, this._mouseHover$, this._pauseOnFocus$, this._focused$, this._interval$,
+            hasNextSlide$)
             .pipe(
-                map(([pause, pauseOnHover, mouseHover, interval, hasNextSlide]) =>
-                        ((pause || (pauseOnHover && mouseHover) || !hasNextSlide) ? 0 : interval)),
+                map(([pause, pauseOnHover, mouseHover, pauseOnFocus, focused, interval, hasNextSlide]) =>
+                        ((pause || (pauseOnHover && mouseHover) || (pauseOnFocus && focused) || !hasNextSlide) ?
+                             0 :
+                             interval)),
 
                 distinctUntilChanged(), switchMap(interval => interval > 0 ? timer(interval, interval) : NEVER),
                 takeUntil(this._destroy$))
