@@ -667,6 +667,40 @@ describe('ngb-carousel', () => {
        discardPeriodicTasks();
      }));
 
+  it('should pause / resume slide change with time passage on focusin / focusout', fakeAsync(() => {
+       const html = `
+      <ngb-carousel>
+        <ng-template ngbSlide>foo</ng-template>
+        <ng-template ngbSlide>bar</ng-template>
+      </ngb-carousel>
+    `;
+
+       const fixture = createTestComponent(html);
+
+       const carouselDebugEl = fixture.debugElement.query(By.directive(NgbCarousel));
+
+       expectActiveSlides(fixture.nativeElement, [true, false]);
+
+       carouselDebugEl.triggerEventHandler('focusin', {});
+       fixture.detectChanges();
+       expectActiveSlides(fixture.nativeElement, [true, false]);
+
+       tick(6000);
+       fixture.detectChanges();
+       expectActiveSlides(fixture.nativeElement, [true, false]);
+
+       carouselDebugEl.triggerEventHandler('focusout', {});
+       fixture.detectChanges();
+       expectActiveSlides(fixture.nativeElement, [true, false]);
+
+       tick(6000);
+       fixture.detectChanges();
+       expectActiveSlides(fixture.nativeElement, [false, true]);
+
+       discardPeriodicTasks();
+     }));
+
+
   it('should wrap slide changes by default', fakeAsync(() => {
        const html = `
       <ngb-carousel>
@@ -858,6 +892,7 @@ describe('ngb-carousel', () => {
     config.wrap = false;
     config.keyboard = false;
     config.pauseOnHover = false;
+    config.pauseOnFocus = false;
     config.showNavigationIndicators = true;
     config.showNavigationArrows = true;
 
@@ -875,6 +910,7 @@ describe('ngb-carousel', () => {
       expect(carousel.wrap).toBe(config.wrap);
       expect(carousel.keyboard).toBe(config.keyboard);
       expect(carousel.pauseOnHover).toBe(config.pauseOnHover);
+      expect(carousel.pauseOnFocus).toBe(config.pauseOnFocus);
       expect(carousel.showNavigationIndicators).toBe(config.showNavigationIndicators);
       expect(carousel.showNavigationArrows).toBe(config.showNavigationArrows);
     });
