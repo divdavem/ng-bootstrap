@@ -15,7 +15,9 @@ import {
   PLATFORM_ID,
   QueryList,
   TemplateRef,
-  HostListener
+  HostListener,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 
@@ -51,13 +53,17 @@ export class NgbSlide {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     'class': 'carousel slide',
-    '[style.display]': '"block"',
-    '(keydown.arrowLeft)': 'keyboard && prev(NgbSlideEventSource.ARROW_LEFT)',
-    '(keydown.arrowRight)': 'keyboard && next(NgbSlideEventSource.ARROW_RIGHT)'
+    '[style.display]': '"block"'
   },
   template: `
-    <ol class="carousel-indicators" *ngIf="showNavigationIndicators" aria-hidden="true">
+    <ol class="carousel-indicators" *ngIf="showNavigationIndicators" role="tablist" #navigationIndicators
+      (focusin)="navigationIndicatorsFocused = true" (focusout)="navigationIndicatorsFocused = false"
+      [class.active]="navigationIndicatorsFocused"
+    >
       <li *ngFor="let slide of slides" [class.active]="slide.id === activeId"
+          role="tab" [attr.aria-labelledby]="slide.id" [attr.aria-controls]="slide.id"
+          [attr.tabindex]="keyboard ? (slide.id === activeId ? 0 : -1) : null"
+          [attr.aria-selected]="slide.id === activeId"
           (click)="select(slide.id, NgbSlideEventSource.INDICATOR)"></li>
     </ol>
     <div class="carousel-inner">
@@ -167,6 +173,13 @@ export class NgbCarousel implements AfterContentChecked,
    */
   @Input() showNavigationIndicators: boolean;
 
+  navigationIndicatorsFocused = false;
+
+  @ViewChild('navigationIndicators', {
+    static: false
+  })
+  private _navigationIndicators: ElementRef;
+
   /**
    * An event emitted right after the slide transition is completed.
    *
@@ -184,6 +197,22 @@ export class NgbCarousel implements AfterContentChecked,
     this.pauseOnFocus = config.pauseOnFocus;
     this.showNavigationArrows = config.showNavigationArrows;
     this.showNavigationIndicators = config.showNavigationIndicators;
+  }
+
+  @HostListener('keydown.arrowLeft')
+  keyArrowLeft() {
+    if (this.keyboard) {
+      this.prev(NgbSlideEventSource.ARROW_LEFT);
+      this._focusIndicator();
+    }
+  }
+
+  @HostListener('keydown.arrowRight')
+  keyArrowRight() {
+    if (this.keyboard) {
+      this.next(NgbSlideEventSource.ARROW_RIGHT);
+      this._focusIndicator();
+    }
   }
 
   @HostListener('mouseenter')
@@ -276,6 +305,21 @@ export class NgbCarousel implements AfterContentChecked,
    * Restarts cycling through the slides from left to right.
    */
   cycle() { this._pause$.next(false); }
+
+  /**
+   * Focuses the currently active indicator (if displayed).
+   */
+  private async _focusIndicator() {
+    if (this.showNavigationIndicators) {
+      await Promise.resolve();
+      const currentSlideIdx = this._getSlideIdxById(this.activeId);
+      const item = this._navigationIndicators && this._navigationIndicators.nativeElement ?
+        this._navigationIndicators.nativeElement.children[currentSlideIdx] : null;
+      if (item) {
+        item.focus();
+      }
+    }
+  }
 
   private _cycleToSelected(slideIdx: string, direction: NgbSlideEventDirection, source?: NgbSlideEventSource) {
     let selectedSlide = this._getSlideById(slideIdx);
