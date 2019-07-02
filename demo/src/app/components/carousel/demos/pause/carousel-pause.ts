@@ -1,8 +1,20 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NgbCarousel, NgbSlideEvent, NgbSlideEventSource } from '@ng-bootstrap/ng-bootstrap';
 
 
-@Component({selector: 'ngbd-carousel-pause', templateUrl: './carousel-pause.html'})
+@Component({
+  selector: 'ngbd-carousel-pause', templateUrl: './carousel-pause.html',
+  encapsulation: ViewEncapsulation.None, styles: [`
+    ngbd-carousel-pause .carousel-indicators>li:focus {
+      outline: none;
+    }
+    ngbd-carousel-pause .carousel-indicators.active,
+    ngbd-carousel-pause .carousel a:focus {
+      outline: 5px solid rgba(178, 178, 178, 0.5);
+      outline-offset: -5px;
+    }`
+  ]
+})
 export class NgbdCarouselPause {
   images = [1, 2, 3, 4, 5, 6, 7].map(() => `https://picsum.photos/900/500?random&t=${Math.random()}`);
 
