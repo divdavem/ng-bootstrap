@@ -75,6 +75,7 @@ export class NgbSlide {
       </div>
     </div>
     <a class="carousel-control-prev" href="#" role="button"
+      [tabindex]="keyboard && showNavigationIndicators ? -1 : 0"
       [attr.aria-describedby]="activeId" [attr.aria-controls]="activeId"
       (keydown.space)="$event.preventDefault();prev(NgbSlideEventSource.ARROW_LEFT)"
       (click)="$event.preventDefault();prev(NgbSlideEventSource.ARROW_LEFT)" *ngIf="showNavigationArrows">
@@ -82,6 +83,7 @@ export class NgbSlide {
       <span class="sr-only" i18n="@@ngb.carousel.previous">Previous</span>
     </a>
     <a class="carousel-control-next" href="#" role="button"
+      [tabindex]="keyboard && showNavigationIndicators ? -1 : 0"
       [attr.aria-describedby]="activeId" [attr.aria-controls]="activeId"
       (keydown.space)="$event.preventDefault();next(NgbSlideEventSource.ARROW_RIGHT)"
       (click)="$event.preventDefault();next(NgbSlideEventSource.ARROW_RIGHT)" *ngIf="showNavigationArrows">
