@@ -7,7 +7,6 @@ import {
   ContentChildren,
   Directive,
   EventEmitter,
-  HostListener,
   Inject,
   Input,
   NgZone,
@@ -55,8 +54,14 @@ export class NgbSlide {
   encapsulation: ViewEncapsulation.None,
   host: {
     'class': 'carousel slide',
-    '[attr.tabindex]': 'keyboard && !showNavigationIndicators ? 0 : null',
-    '[style.display]': '"block"'
+    '[attr.tabindex]': 'keyboard && !showNavigationIndicators ? 0 : -1',
+    '[style.display]': '"block"',
+    '(keydown.arrowLeft)': 'keyboard && arrowLeft()',
+    '(keydown.arrowRight)': 'keyboard && arrowRight()',
+    '(mouseenter)': 'mouseHover = true',
+    '(mouseleave)': 'mouseHover = false',
+    '(focusin)': 'focused = true',
+    '(focusout)': 'focused = false'
   },
   template: `
     <ol class="carousel-indicators" *ngIf="showNavigationIndicators" role="tablist" #navigationIndicators
@@ -201,41 +206,23 @@ export class NgbCarousel implements AfterContentChecked,
     this.showNavigationIndicators = config.showNavigationIndicators;
   }
 
-  @HostListener('keydown.arrowLeft')
-  keyArrowLeft() {
-    if (this.keyboard) {
-      this.prev(NgbSlideEventSource.ARROW_LEFT);
-      this._focusIndicator();
-    }
+  arrowLeft() {
+    this.prev(NgbSlideEventSource.ARROW_LEFT);
+    this._focusIndicator();
   }
 
-  @HostListener('keydown.arrowRight')
-  keyArrowRight() {
-    if (this.keyboard) {
-      this.next(NgbSlideEventSource.ARROW_RIGHT);
-      this._focusIndicator();
-    }
+  arrowRight() {
+    this.next(NgbSlideEventSource.ARROW_RIGHT);
+    this._focusIndicator();
   }
 
-  @HostListener('mouseenter')
-  mouseEnter() {
-    this._mouseHover$.next(true);
-  }
+  set mouseHover(value: boolean) { this._mouseHover$.next(value); }
 
-  @HostListener('mouseleave')
-  mouseLeave() {
-    this._mouseHover$.next(false);
-  }
+  get mouseHover() { return this._mouseHover$.value; }
 
-  @HostListener('focusin')
-  focusin() {
-    this._focused$.next(true);
-  }
+  set focused(value: boolean) { this._focused$.next(value); }
 
-  @HostListener('focusout')
-  focusout() {
-    this._focused$.next(false);
-  }
+  get focused() { return this._focused$.value; }
 
   ngAfterContentInit() {
     // setInterval() doesn't play well with SSR and protractor,
