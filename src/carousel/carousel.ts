@@ -194,6 +194,14 @@ export class NgbCarousel implements AfterContentChecked,
    */
   @Output() slide = new EventEmitter<NgbSlideEvent>();
 
+  set mouseHover(value: boolean) { this._mouseHover$.next(value); }
+
+  get mouseHover() { return this._mouseHover$.value; }
+
+  set focused(value: boolean) { this._focused$.next(value); }
+
+  get focused() { return this._focused$.value; }
+
   constructor(
       config: NgbCarouselConfig, @Inject(PLATFORM_ID) private _platformId, private _ngZone: NgZone,
       private _cd: ChangeDetectorRef) {
@@ -215,14 +223,6 @@ export class NgbCarousel implements AfterContentChecked,
     this.next(NgbSlideEventSource.ARROW_RIGHT);
     this._focusIndicator();
   }
-
-  set mouseHover(value: boolean) { this._mouseHover$.next(value); }
-
-  get mouseHover() { return this._mouseHover$.value; }
-
-  set focused(value: boolean) { this._focused$.next(value); }
-
-  get focused() { return this._focused$.value; }
 
   ngAfterContentInit() {
     // setInterval() doesn't play well with SSR and protractor,
