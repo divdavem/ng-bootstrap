@@ -42,10 +42,29 @@ ngbd-table-complete span.ngb-highlight {
   background-color: yellow;
 }
 
+ngb-carousel .carousel-indicators>li:focus {
+  outline: none;
+}
+
+ngb-carousel .carousel-indicators.active {
+  outline: 5px solid rgba(178, 178, 178, 0.5);
+  outline-offset: -5px;
+}
+
+ngb-carousel a:focus>span {
+  outline: 5px solid rgba(178, 178, 178, 0.5);
+  outline-offset: 5px;
+}
+
+ngb-carousel a:focus img {
+  outline: 5px solid rgba(178, 178, 178, 0.5);
+  outline-offset: -5px;
+}
+
 ngb-carousel .picsum-img-wrapper {
   position: relative;
   height: 0;
-  padding-top: 55%; /* Keep ratio for 900x500 images */
+  padding-top: 55.55%; /* Keep ratio for 900x500 images */
 }
 
 ngb-carousel .picsum-img-wrapper>img {
