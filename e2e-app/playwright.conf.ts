@@ -13,8 +13,7 @@ export const launchOptions: LaunchOptions = {
 };
 
 export const contextOptions: BrowserContextOptions = {
-  viewport: {width: 1280, height: 720},
-  recordVideo: process.env.TRAVIS ? {dir: `test-videos/e2e/${browserName}`} : undefined
+  viewport: {width: 1280, height: 720}
 };
 
 export const test = new Playwright(Browsers[browserName], launchOptions, contextOptions);

@@ -11,7 +11,6 @@ jobs:
       LOGS_DIR: /tmp/logs
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir -p $LOGS_DIR && ./scripts/sauce_connect_setup.sh
       - uses: actions/setup-node@v1
         with:
           node-version: "12.x"
@@ -25,22 +24,4 @@ jobs:
           restore-keys: |
             yarn-
       - run: yarn --frozen-lockfile
-      - run: yarn ci && yarn scripts:test
-      - uses: codecov/codecov-action@v1
-        with:
-          file: coverage/lcov.info
-          flags: unit
-      - uses: codecov/codecov-action@v1
-        with:
-          file: coverage-e2e/lcov.info
-          flags: e2e
-      - uses: actions/upload-artifact@v2
-        with:
-          name: test-videos
-          path: test-videos
-        if: ${{ always() }}
-      - run: ./scripts/sauce_connect_block.sh
-      - run: yarn saucelabs
-      - run: yarn saucelabs:ie
-      - run: ./scripts/sauce_connect_teardown.sh
-        if: ${{ always() }}
+      - run: yarn e2e:playwright
