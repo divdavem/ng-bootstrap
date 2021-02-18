@@ -83,7 +83,14 @@ module.exports = function (config) {
     browsers: ['CHROME', 'FIREFOX', 'EDGE', 'EDGE18', 'SAFARI12', 'SAFARI13'],
     autoWatch: false,
     singleRun: true,
-    captureTimeout: 180000,
+    // Saucelabs has a concurrency limit of 5 browser sessions for open source projects:
+    // https://saucelabs.com/solutions/open-source
+    // If the number of concurrent browsers is reached, requests are put on a queue.
+    // According to the following link, a request can stay in the queue for 10min:
+    // https://support.saucelabs.com/hc/en-us/articles/360002048214-Queuing-Tests-on-Sauce-Labs
+    // The capture timeout should match that time plus some time to start the browser session
+    // (evaluated to 1min30s here), so a total of 11min30s = 690000ms.
+    captureTimeout: 690000,
     browserDisconnectTimeout: 180000,
     browserDisconnectTolerance: 3,
     browserNoActivityTimeout: 300000
